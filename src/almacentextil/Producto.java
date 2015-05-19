@@ -1,23 +1,15 @@
 package almacentextil;
 
-
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.*;
 import javax.swing.*;
 
 class Producto extends JFrame {
 
-    private JTabbedPane tabbedPane;
+    private final JTabbedPane tabbedPane;
     private JPanel panel1;
     private JPanel panel2;
 
     public Producto() {
-        // NOTE: to reduce the amount of code in this example, it uses
-        // panels with a NULL layout.  This is NOT suitable for
-        // production code since it may not display correctly for
-        // a look-and-feel.
 
         setTitle("Producto");
         setSize(450, 400);
@@ -60,29 +52,29 @@ class Producto extends JFrame {
         JTextField id_ped2 = new JTextField();
         id_ped2.setBounds(80, 60, 90, 25);
         panel1.add(id_ped2);
-        
+
         JLabel etq_env2 = new JLabel("Nombre:");
         etq_env2.setBounds(10, 105, 100, 25);
         panel1.add(etq_env2);
-        
+
         JTextField fech_env2 = new JTextField();
         fech_env2.setBounds(80, 105, 300, 25);
         panel1.add(fech_env2);
-        
+
         JLabel etq_ciu2 = new JLabel("Descripcion:");
         etq_ciu2.setBounds(10, 145, 80, 25);
         panel1.add(etq_ciu2);
-        
+
         JTextArea txt_desc = new JTextArea();
         txt_desc.setBounds(80, 170, 300, 100);
         panel1.add(txt_desc);
-        
+
         JButton aceptar2 = new JButton("Aceptar");
-        aceptar2.setBounds(220,290,80,25);
+        aceptar2.setBounds(220, 290, 80, 25);
         panel1.add(aceptar2);
-        
+
         JButton limpiar2 = new JButton("Limpiar");
-        limpiar2.setBounds(320,290,80,25);
+        limpiar2.setBounds(320, 290, 80, 25);
         panel1.add(limpiar2);
     }
 
@@ -105,35 +97,35 @@ class Producto extends JFrame {
         JTextField id_ped2 = new JTextField();
         id_ped2.setBounds(80, 60, 90, 25);
         panel2.add(id_ped2);
-        
+
         JLabel etq_env2 = new JLabel("Nombre:");
         etq_env2.setBounds(10, 105, 100, 25);
         panel2.add(etq_env2);
-        
+
         JTextField fech_env2 = new JTextField();
         fech_env2.setBounds(80, 105, 300, 25);
         panel2.add(fech_env2);
-        
+
         JLabel etq_ciu2 = new JLabel("Descripcion:");
         etq_ciu2.setBounds(10, 145, 80, 25);
         panel2.add(etq_ciu2);
-        
+
         JTextArea txt_desc = new JTextArea();
         txt_desc.setBounds(80, 170, 300, 100);
         panel2.add(txt_desc);
-        
+
         JButton eliminar = new JButton("Eliminar");
-        eliminar.setBounds(30,290,80,25);
+        eliminar.setBounds(30, 290, 80, 25);
         eliminar.setBackground(Color.red);
         eliminar.setForeground(Color.white);
         panel2.add(eliminar);
-        
+
         JButton aceptar2 = new JButton("Aceptar");
-        aceptar2.setBounds(220,290,80,25);
+        aceptar2.setBounds(220, 290, 80, 25);
         panel2.add(aceptar2);
-        
+
         JButton limpiar2 = new JButton("Limpiar");
-        limpiar2.setBounds(320,290,80,25);
+        limpiar2.setBounds(320, 290, 80, 25);
         panel2.add(limpiar2);
     }
 }
