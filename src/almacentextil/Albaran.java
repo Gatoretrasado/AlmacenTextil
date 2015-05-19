@@ -10,6 +10,7 @@ public final class Albaran extends JFrame {
 
     private final JTabbedPane tabbedPane;
     private JTextField txt_ID;
+    private JScrollPane scroll;
     private JTable tablaBD;
     private JComboBox cmbox_ID;
     private JButton btn_Limpiar, btn_Aceptar;
@@ -18,10 +19,10 @@ public final class Albaran extends JFrame {
     private String[] AÑOS;
     private String[] DIAS;
     final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
-    
-     //Para poder conectarse a la base de datos
+
+    //Para poder conectarse a la base de datos
     private final conexionDB meConecto = new conexionDB();
-    
+
     public Albaran() {
 
         setTitle(" -- Albaran --");
@@ -55,7 +56,7 @@ public final class Albaran extends JFrame {
     //--------------------------------------------------------------------------
     //Primera Pestaña
     public void crearPestaña01() {
-        
+
         pestaña01 = new JPanel();
         pestaña01.setLayout(null);
 
@@ -277,69 +278,70 @@ public final class Albaran extends JFrame {
         });
     }
 
+    //--------------------------------------------------------------------------
+    //Tercera Pestaña
     public void crearPestaña03() {
         pestaña03 = new JPanel();
         pestaña03.setLayout(null);
-        
+
         cmbox_ID = new JComboBox();
         cmbox_ID.setBounds(15, 5, 100, 20);
         pestaña03.add(cmbox_ID);
-        
+
         JButton btn_Buscar = new JButton("Buscar");
         btn_Buscar.setBounds(334, 5, 90, 20);
         pestaña03.add(btn_Buscar);
-        
-        JTextArea area = new JTextArea();
-        JScrollPane areaLista = new JScrollPane(area);
-        areaLista.setBounds(5, 35, 420, 250);
-        pestaña03.add(areaLista);
+
+        tablaBD = new JTable();
+        scroll = new JScrollPane(tablaBD);
+        scroll.setBounds(5, 35, 420, 250);
+        pestaña03.add(scroll);
+
+        llenarJtable();
 
         btn_Buscar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                try {
-                    int buscarA = (Integer) cmbox_ID.getSelectedItem();
+                int buscarA = (Integer) cmbox_ID.getSelectedItem();
+                Connection miConexion = (Connection) meConecto.ConectarMysql();
 
-                    try {
+                try (Statement st = miConexion.createStatement()) {
+                    
+                    //Para establecer el modelo al JTable
+                    DefaultTableModel modelo = new DefaultTableModel();
+                    tablaBD.setModel(modelo);
 
-                        System.out.println("----- Empezamos");
+                    //Para ejecutar la consulta
+                    String query = "SELECT * FROM `producto` WHERE `Id_producto` = " + buscarA + "";
+                    Statement s = miConexion.createStatement();
 
-                        //Paso01 Cargamos los drivers
-                        DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+                    //Almacenamos en un ResultSet
+                    ResultSet rs = s.executeQuery(query);
 
-                        //Paso02 Creamos el Objeto para la conexion 
-                        Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "damlocal", "case");
-                        System.out.println(" Parece ser que nos hemos conectado");
+                    //Obteniendo la informacion de las columnas que estan siendo consultadas
+                    ResultSetMetaData rsMd = rs.getMetaData();
 
-                        //Paso03 Creamos el objeto para la sentencia  
-                        PreparedStatement prst = con.prepareStatement("select * from albaran");
+                    //La cantidad de columnas que tiene la consulta
+                    int cantidadColumnas = rsMd.getColumnCount();
 
-                        //Paso04 Ejecutamos la sentencia
-                        ResultSet rsst = prst.executeQuery();
-                        System.out.println("la sentencia es: " + rsst);
-                        System.out.println("---- Ejecutmamos la sentencia");
-
-                        while (rsst.next()) {
-                            for (int i = 1; i <= 4; i++) {
-                                System.out.print(rsst.getString(i) + '\t');
-                            }
-                            System.out.println();
-                            System.out.println("Estamos en la fila  :" + rsst.getRow());
-                        }
-
-                        //Paso05 Cerramos la Conexion  
-                        con.close();
-                        System.out.println("---Cerramos la conexion");
-
-                    } catch (SQLException sqle) {
-                        System.out.println();
-                        System.out.println(" Parece ser que nos hemos fallado");
-                        sqle.printStackTrace();
-                        System.out.println(sqle.getErrorCode() + " - " + sqle.getMessage());
+                    //Establecer como cabezeras el nombre de las colimnas
+                    for (int i = 1; i <= cantidadColumnas; i++) {
+                        modelo.addColumn(rsMd.getColumnLabel(i));
                     }
-                } catch (Exception err) {
-                    System.out.println("Error 02");
+                    //Creando las filas para el JTable
+                    while (rs.next()) {
+                        Object[] fila = new Object[cantidadColumnas];
+                        for (int i = 0; i < cantidadColumnas; i++) {
+                            fila[i] = rs.getObject(i + 1);
+                        }
+                        modelo.addRow(fila);
+                    }
+                    rs.close();
+                    miConexion.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+
             }
         });
     }
@@ -361,7 +363,7 @@ public final class Albaran extends JFrame {
             contador++;
         }
     }
-    
+
     public void llenarJtable() {
 
         Connection miConexion = (Connection) meConecto.ConectarMysql();
