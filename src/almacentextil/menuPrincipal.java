@@ -47,7 +47,7 @@ public class menuPrincipal extends JFrame{
         btn_fact.setFont(new java.awt.Font("Cambria Math", 0, 18)); // NOI18N
         btn_fact.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/Factura.png"))); // NOI18N
         btn_fact.setText("Factura");
-        btn_fact.setToolTipText("");
+        btn_fact.setToolTipText("Generar Factura");
         btn_fact.setBorderPainted(false);
         btn_fact.setContentAreaFilled(false);
         btn_fact.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -69,7 +69,7 @@ public class menuPrincipal extends JFrame{
         btn_prod.setFont(new java.awt.Font("Cambria Math", 0, 14)); // NOI18N
         btn_prod.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/productos.png"))); // NOI18N
         btn_prod.setText("Productos");
-        btn_prod.setToolTipText("");
+        btn_prod.setToolTipText("Buscador de productos");
         btn_prod.setBorderPainted(false);
         btn_prod.setContentAreaFilled(false);
         btn_prod.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -91,7 +91,7 @@ public class menuPrincipal extends JFrame{
         btn_alb.setFont(new java.awt.Font("Cambria Math", 0, 18)); // NOI18N
         btn_alb.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/Albaran.png"))); // NOI18N
         btn_alb.setText("Albaran");
-        btn_alb.setToolTipText("");
+        btn_alb.setToolTipText("Generar Albaran");
         btn_alb.setBorderPainted(false);
         btn_alb.setContentAreaFilled(false);
         btn_alb.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -113,7 +113,7 @@ public class menuPrincipal extends JFrame{
         btn_datos.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
         btn_datos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/datos.png"))); // NOI18N
         btn_datos.setText("Datos");
-        btn_datos.setToolTipText("");
+        btn_datos.setToolTipText("Modificar los datos");
         btn_datos.setBorderPainted(false);
         btn_datos.setContentAreaFilled(false);
         btn_datos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -133,7 +133,7 @@ public class menuPrincipal extends JFrame{
         btn_ped.setFont(new java.awt.Font("Cambria Math", 0, 18)); // NOI18N
         btn_ped.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/pedido.png"))); // NOI18N
         btn_ped.setText("Pedido");
-        btn_ped.setToolTipText("");
+        btn_ped.setToolTipText("Generar Pedido");
         btn_ped.setBorderPainted(false);
         btn_ped.setContentAreaFilled(false);
         btn_ped.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
