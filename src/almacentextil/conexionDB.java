@@ -14,7 +14,7 @@ public class conexionDB {
 
             Connection conexion = DriverManager.getConnection(servidor, usuarioDB, passwordDB);
 
-            //Nuestra sentencia SQL
+            /*//Nuestra sentencia SQL
             String query = "SELECT * FROM `producto`";
 
             //Creamos la sentencia en Java
@@ -33,7 +33,7 @@ public class conexionDB {
                 //Mostramos el Resultado
                 System.out.format("%s, %s, %s, %s\n", id, nombre, desc, Precio);
             }
-            st.close();
+            st.close();*/
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println("Se ha producido un Error! ");
             System.err.println(e.getMessage());

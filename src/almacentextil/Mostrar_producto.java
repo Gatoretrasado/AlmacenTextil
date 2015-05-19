@@ -112,8 +112,8 @@ public final class Mostrar_producto extends JFrame {
             Class.forName("com.mysql.jdbc.Driver");
             
             Connection conexion = DriverManager.getConnection(servidor, usuarioDB, passwordDB);
-
-            int buscarA = 100;
+            
+            
             //Nuestra sentencia SQL
             String query = "SELECT * FROM `producto`";
 
