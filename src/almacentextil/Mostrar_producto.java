@@ -36,9 +36,8 @@ public final class Mostrar_producto extends JFrame {
         this.setVisible(true);
 
         tablaBD = new JTable();
-        tablaBD.setBounds(5, 35, 420, 320);
         scroll = new JScrollPane(tablaBD);
-        panelMostrar.add(tablaBD);
+        scroll.setBounds(5, 35, 420, 320);
         panelMostrar.add(scroll);
 
         btn_Buscar = new JButton("Buscar");
