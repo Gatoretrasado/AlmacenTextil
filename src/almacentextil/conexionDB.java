@@ -1,42 +1,35 @@
 package almacentextil;
 
 import java.sql.*;
+import javax.swing.JOptionPane;
 
 public class conexionDB {
 
-    public static void main(String[] args) {
+    public Connection ConectarMysql() {
+
+        Connection conexion = null;
+
         try {
+
             //Creamos nuestra conexion a la BD mysql
             Class.forName("com.mysql.jdbc.Driver");
             String servidor = "jdbc:mysql://localhost:3306/almacentextil?zeroDateTimeBehavior=convertToNull";
             String usuarioDB = "root";
             String passwordDB = "";
 
-            Connection conexion = DriverManager.getConnection(servidor, usuarioDB, passwordDB);
+            conexion = DriverManager.getConnection(servidor, usuarioDB, passwordDB);
 
-            /*//Nuestra sentencia SQL
-            String query = "SELECT * FROM `producto`";
-
-            //Creamos la sentencia en Java
-            Statement st = conexion.createStatement();
-
-            // Ejecutamos la sentencia y almacenamos el resultado
-            ResultSet rs = st.executeQuery(query);
-
-            //Recoremos el ResultSet para ir mostrando los datos.
-            while (rs.next()) {
-                int id = rs.getInt("Id_producto");
-                String nombre = rs.getString("Nombre");
-                String desc = rs.getString("Descrip");
-                int Precio = rs.getInt("Precio_uni");
-
-                //Mostramos el Resultado
-                System.out.format("%s, %s, %s, %s\n", id, nombre, desc, Precio);
-            }
-            st.close();*/
-        } catch (ClassNotFoundException | SQLException e) {
-            System.err.println("Se ha producido un Error! ");
-            System.err.println(e.getMessage());
+        } catch (ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(null, ex, "Error1 en la Conexión con la BD " + ex.getMessage(), JOptionPane.ERROR_MESSAGE);
+            conexion = null;
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex, "Error2 en la Conexión con la BD " + ex.getMessage(), JOptionPane.ERROR_MESSAGE);
+            conexion = null;
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex, "Error3 en la Conexión con la BD " + ex.getMessage(), JOptionPane.ERROR_MESSAGE);
+            conexion = null;
+        } finally {
+            return conexion;
         }
     }
 }
