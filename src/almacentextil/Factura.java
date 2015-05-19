@@ -2,6 +2,9 @@ package almacentextil;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
 import javax.swing.*;
 
@@ -11,6 +14,7 @@ public final class Factura extends JFrame {
     private JPanel pestaña01;
     private JPanel pestaña02;
     private JPanel pestaña03;
+    static String nFactura;
 
     public Factura() {
 
@@ -91,6 +95,28 @@ public final class Factura extends JFrame {
         JTextField tot_con1 = new JTextField();
         tot_con1.setBounds(100, 255, 150, 20);
         pestaña01.add(tot_con1);
+        
+        JButton btn_acept = new JButton("Aceptar");
+        btn_acept.setBounds(200, 300, 90,27);
+        pestaña01.add(btn_acept);
+        JButton btn_limp = new JButton("Limpiar");
+        btn_limp.setBounds(300, 300, 90,27);
+        pestaña01.add(btn_limp);
+        
+         btn_acept.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    
+        
+                    nFactura = id_fact1.getText();
+                    imprimir(id_ped1.getText(), fech_env1.getText(), tot_sin1.getText(), dto1.getText(), tot_con1.getText());
+                   
+                } catch (Exception err) {
+                    System.out.println(err);
+                }
+            }
+        });
     }
 
     public void crearPestaña02() {
@@ -144,6 +170,13 @@ public final class Factura extends JFrame {
         JTextField tot_con2 = new JTextField();
         tot_con2.setBounds(100, 255, 150, 20);
         pestaña02.add(tot_con2);
+        
+        JButton btn_acept = new JButton("Aceptar");
+        btn_acept.setBounds(200, 300, 90,27);
+        pestaña02.add(btn_acept);
+        JButton btn_limp = new JButton("Limpiar");
+        btn_limp.setBounds(300, 300, 90,27);
+        pestaña02.add(btn_limp);
         
     }
 
@@ -215,5 +248,23 @@ public final class Factura extends JFrame {
                 }
             }
         });
+    }
+     static public void imprimir(String id_p,String fecha,String totalsinIVA,String destuento,String totalconIVA) throws IOException {
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\joseantonio\\Documents\\NetBeansProjects\\AlmacenTextil\\src\\Facturas\\Factura"+nFactura+".txt"));
+
+        bw.write("Numero de factura: "+nFactura);
+        bw.newLine();
+        bw.write("Numero del pedido: "+id_p);
+        bw.newLine();
+        bw.write("Fecha de la factura: "+fecha);
+        bw.newLine();
+        bw.write("Total (sin IVA): "+totalsinIVA+"€");
+        bw.newLine();
+        bw.write("Descuento aplicado: "+destuento+"%");
+        bw.newLine();
+        bw.write("Total (con IVA): "+totalconIVA+"€");
+        bw.newLine();
+        bw.close();
     }
 }
