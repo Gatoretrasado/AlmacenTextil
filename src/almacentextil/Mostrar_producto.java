@@ -130,11 +130,15 @@ public final class Mostrar_producto extends JFrame {
             }
             //Creando las filas para el JTable
             while (rs.next()) {
+                Object[] fila = new Object[cantidadColumnas];
                 cmbox_ID.addItem(rs.getInt("Id_producto"));
-
-                //Mostramos el Resultado
-                System.out.format("%s, %s, %s, %s\n", id, nombre, desc, Precio);
+                for (int i = 0; i < cantidadColumnas; i++) {
+                    fila[i] = rs.getObject(i + 1);
+                }
+                modelo.addRow(fila);
             }
+            rs.close();
+            miConexion.close();
         } catch (SQLException e) {
             System.err.println("Se ha producido un Error! ");
             System.err.println(e.getMessage());
