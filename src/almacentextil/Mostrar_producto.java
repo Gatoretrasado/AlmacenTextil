@@ -52,29 +52,25 @@ public final class Mostrar_producto extends JFrame {
         lblID = new JLabel("ID: ");
         panelMostrar.add(lblID);
 
-        meConecto();
+        llenarJtable();
 
         btn_Buscar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
 
                 int buscarA = (Integer) cmbox_ID.getSelectedItem();
+                Connection miConexion = (Connection) meConecto.ConectarMysql();
 
-                try {
+                try (Statement st = miConexion.createStatement()) {
                     //Para establecer el modelo al JTable
                     DefaultTableModel modelo = new DefaultTableModel();
                     tablaBD.setModel(modelo);
 
-                    //Para conectarnos a nuestra base de datos
-                    DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-                    Connection conexion = DriverManager.getConnection(null, null, null);
-
                     //Para ejecutar la consulta
                     String query = "SELECT * FROM `producto` WHERE `Id_producto` = " + buscarA + "";
-                    Statement s = conexion.createStatement();
+                    Statement s = miConexion.createStatement();
 
-                    //Ejecutamos la consulta que escribimos en la caja de texto
-                    //y los datos lo almacenamos en un ResultSet
+                    //Almacenamos en un ResultSet
                     ResultSet rs = s.executeQuery(query);
 
                     //Obteniendo la informacion de las columnas que estan siendo consultadas
@@ -96,7 +92,7 @@ public final class Mostrar_producto extends JFrame {
                         modelo.addRow(fila);
                     }
                     rs.close();
-                    conexion.close();
+                    miConexion.close();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -105,29 +101,40 @@ public final class Mostrar_producto extends JFrame {
         });
     }
 
-    public void meConecto() {
+    public void llenarJtable() {
 
         Connection miConexion = (Connection) meConecto.ConectarMysql();
 
         try (Statement st = miConexion.createStatement()) {
+
+            //Para establecer el modelo al JTable
+            DefaultTableModel modelo = new DefaultTableModel();
+            tablaBD.setModel(modelo);
+
             //Nuestra sentencia SQL
             String sentencia = "SELECT * FROM `producto`";
+            Statement s = miConexion.createStatement();
 
-            // Ejecutamos la sentencia y almacenamos el resultado
-            ResultSet rs = st.executeQuery(sentencia);
+            //Almacenamos en un ResultSet
+            ResultSet rs = s.executeQuery(sentencia);
 
-            //Recoremos el ResultSet para ir mostrando los datos.
+            //Obteniendo la informacion de las columnas que estan siendo consultadas
+            ResultSetMetaData rsMd = rs.getMetaData();
+
+            //La cantidad de columnas que tiene la consulta
+            int cantidadColumnas = rsMd.getColumnCount();
+
+            //Establecer como cabezeras el nombre de las colimnas
+            for (int i = 1; i <= cantidadColumnas; i++) {
+                modelo.addColumn(rsMd.getColumnLabel(i));
+            }
+            //Creando las filas para el JTable
             while (rs.next()) {
-                int id = rs.getInt("Id_producto");
-                String nombre = rs.getString("Nombre");
-                String desc = rs.getString("Descrip");
-                int Precio = rs.getInt("Precio_uni");
                 cmbox_ID.addItem(rs.getInt("Id_producto"));
 
                 //Mostramos el Resultado
                 System.out.format("%s, %s, %s, %s\n", id, nombre, desc, Precio);
             }
-            st.close();
         } catch (SQLException e) {
             System.err.println("Se ha producido un Error! ");
             System.err.println(e.getMessage());
