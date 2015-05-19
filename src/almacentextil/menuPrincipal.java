@@ -193,7 +193,7 @@ public final class menuPrincipal extends JFrame {
         try {
             Factura f = new Factura();
         } catch (Exception err) {
-            System.out.println("Error 02");
+            System.out.println("Error 196: "+err);
         }
     }
 
@@ -201,15 +201,15 @@ public final class menuPrincipal extends JFrame {
         try {
             Mostrar_producto mp = new Mostrar_producto();
         } catch (Exception err) {
-            System.out.println("Error 02");
+            System.out.println("Error 204: "+err);
         }
     }
 
     private void btn_albActionPerformed(java.awt.event.ActionEvent evt) {
         try {
-            Albaran a = new Albaran();
+            Albaran albaran = new Albaran();
         } catch (Exception err) {
-            System.out.println("Error 02");
+            System.out.println("Error 212: "+err);
         }
     }
 
@@ -217,7 +217,7 @@ public final class menuPrincipal extends JFrame {
         try {
             menuDatos md = new menuDatos();
         } catch (Exception err) {
-            System.out.println("Error 02");
+            System.out.println("Error 220: "+err);
         }
     }
 
@@ -225,7 +225,7 @@ public final class menuPrincipal extends JFrame {
         try {
             Pedido p = new Pedido();
         } catch (Exception err) {
-            System.out.println("Error 02");
+            System.out.println("Error 228: "+err);
         }
     }
 
