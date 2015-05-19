@@ -12,8 +12,9 @@ public final class Mostrar_producto extends JFrame {
     JButton btn_Buscar;
     JLabel lblID;
     JScrollPane areaLista;
-    JSpinner spnID;
+    JComboBox cmbox_ID;
     JTable tablaBD;
+    JScrollPane scroll;
 
     String servidor = "jdbc:mysql://localhost:3306/almacentextil?zeroDateTimeBehavior=convertToNull";
     String usuarioDB = "root";
@@ -37,15 +38,17 @@ public final class Mostrar_producto extends JFrame {
         
         tablaBD = new JTable();
         tablaBD.setBounds(5, 35, 420, 320);
+        scroll = new JScrollPane(tablaBD);
         panelMostrar.add(tablaBD);
+        panelMostrar.add(scroll);
         
         btn_Buscar = new JButton("Buscar");
         btn_Buscar.setBounds(334, 5, 90, 20);
         panelMostrar.add(btn_Buscar);
 
-        spnID = new JSpinner();
-        spnID.setBounds(15, 5, 35, 25);
-        panelMostrar.add(spnID);
+        cmbox_ID = new JComboBox();
+        cmbox_ID.setBounds(15, 5, 50, 25);
+        panelMostrar.add(cmbox_ID);
 
         lblID = new JLabel("ID: ");
         panelMostrar.add(lblID);
@@ -55,6 +58,8 @@ public final class Mostrar_producto extends JFrame {
         btn_Buscar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
+                
+                int buscarA = (Integer) cmbox_ID.getSelectedItem();
 
                 try {
                     //Para establecer el modelo al JTable
@@ -66,7 +71,7 @@ public final class Mostrar_producto extends JFrame {
                     Connection conexion = DriverManager.getConnection(servidor, usuarioDB, passwordDB);
                     
                     //Para ejecutar la consulta
-                    String query = "SELECT * FROM `producto`";
+                    String query = "SELECT * FROM `producto` WHERE `Id_producto` = "+buscarA+"";
                     Statement s = conexion.createStatement();
                     
                     //Ejecutamos la consulta que escribimos en la caja de texto
@@ -108,6 +113,7 @@ public final class Mostrar_producto extends JFrame {
             
             Connection conexion = DriverManager.getConnection(servidor, usuarioDB, passwordDB);
 
+            int buscarA = 100;
             //Nuestra sentencia SQL
             String query = "SELECT * FROM `producto`";
 
@@ -123,6 +129,7 @@ public final class Mostrar_producto extends JFrame {
                 String nombre = rs.getString("Nombre");
                 String desc = rs.getString("Descrip");
                 int Precio = rs.getInt("Precio_uni");
+                cmbox_ID.addItem(rs.getInt("Id_producto"));
 
                 //Mostramos el Resultado
                 System.out.format("%s, %s, %s, %s\n", id, nombre, desc, Precio);
