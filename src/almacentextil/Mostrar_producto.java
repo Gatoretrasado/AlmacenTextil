@@ -16,9 +16,8 @@ public final class Mostrar_producto extends JFrame {
     JTable tablaBD;
     JScrollPane scroll;
 
-    String servidor = "jdbc:mysql://localhost:3306/almacentextil?zeroDateTimeBehavior=convertToNull";
-    String usuarioDB = "root";
-    String passwordDB = "";
+    //Para poder conectarse a la base de datos
+    private final conexionDB meConecto = new conexionDB();
 
     public Mostrar_producto() {
         visible();
@@ -35,13 +34,13 @@ public final class Mostrar_producto extends JFrame {
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-        
+
         tablaBD = new JTable();
         tablaBD.setBounds(5, 35, 420, 320);
         scroll = new JScrollPane(tablaBD);
         panelMostrar.add(tablaBD);
         panelMostrar.add(scroll);
-        
+
         btn_Buscar = new JButton("Buscar");
         btn_Buscar.setBounds(334, 5, 90, 20);
         panelMostrar.add(btn_Buscar);
@@ -58,22 +57,22 @@ public final class Mostrar_producto extends JFrame {
         btn_Buscar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                
+
                 int buscarA = (Integer) cmbox_ID.getSelectedItem();
 
                 try {
                     //Para establecer el modelo al JTable
                     DefaultTableModel modelo = new DefaultTableModel();
                     tablaBD.setModel(modelo);
-                    
+
                     //Para conectarnos a nuestra base de datos
                     DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-                    Connection conexion = DriverManager.getConnection(servidor, usuarioDB, passwordDB);
-                    
+                    Connection conexion = DriverManager.getConnection(null, null, null);
+
                     //Para ejecutar la consulta
-                    String query = "SELECT * FROM `producto` WHERE `Id_producto` = "+buscarA+"";
+                    String query = "SELECT * FROM `producto` WHERE `Id_producto` = " + buscarA + "";
                     Statement s = conexion.createStatement();
-                    
+
                     //Ejecutamos la consulta que escribimos en la caja de texto
                     //y los datos lo almacenamos en un ResultSet
                     ResultSet rs = s.executeQuery(query);
@@ -107,21 +106,15 @@ public final class Mostrar_producto extends JFrame {
     }
 
     public void meConecto() {
-        try {
-            //Creamos nuestra conexion a la BD mysql
-            Class.forName("com.mysql.jdbc.Driver");
-            
-            Connection conexion = DriverManager.getConnection(servidor, usuarioDB, passwordDB);
-            
-            
-            //Nuestra sentencia SQL
-            String query = "SELECT * FROM `producto`";
 
-            //Creamos la sentencia en Java
-            Statement st = conexion.createStatement();
+        Connection miConexion = (Connection) meConecto.ConectarMysql();
+
+        try (Statement st = miConexion.createStatement()) {
+            //Nuestra sentencia SQL
+            String sentencia = "SELECT * FROM `producto`";
 
             // Ejecutamos la sentencia y almacenamos el resultado
-            ResultSet rs = st.executeQuery(query);
+            ResultSet rs = st.executeQuery(sentencia);
 
             //Recoremos el ResultSet para ir mostrando los datos.
             while (rs.next()) {
@@ -135,7 +128,7 @@ public final class Mostrar_producto extends JFrame {
                 System.out.format("%s, %s, %s, %s\n", id, nombre, desc, Precio);
             }
             st.close();
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             System.err.println("Se ha producido un Error! ");
             System.err.println(e.getMessage());
         }
