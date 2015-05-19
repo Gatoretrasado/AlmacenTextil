@@ -3,7 +3,7 @@ package almacentextil;
 import java.awt.*;
 import javax.swing.*;
 
-class Producto extends JFrame {
+final class Producto extends JFrame {
 
     private final JTabbedPane tabbedPane;
     private JPanel panel1;
@@ -11,7 +11,7 @@ class Producto extends JFrame {
 
     public Producto() {
 
-        setTitle("Producto");
+        setTitle(" -- Producto -- ");
         setSize(450, 400);
         setBackground(Color.gray);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -22,8 +22,8 @@ class Producto extends JFrame {
         getContentPane().add(topPanel);
 
         // Create the tab pages
-        createPage1();
-        createPage2();
+        crearPestaña01();
+        crearPestaña02();
 
         // Create a tabbed pane
         tabbedPane = new JTabbedPane();
@@ -33,7 +33,7 @@ class Producto extends JFrame {
         setVisible(true);
     }
 
-    public void createPage1() {
+    public void crearPestaña01() {
         panel1 = new JPanel();
         panel1.setLayout(null);
 
@@ -78,7 +78,7 @@ class Producto extends JFrame {
         panel1.add(limpiar2);
     }
 
-    public void createPage2() {
+    public void crearPestaña02() {
         panel2 = new JPanel();
         panel2.setLayout(null);
 

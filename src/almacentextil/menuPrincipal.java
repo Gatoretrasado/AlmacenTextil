@@ -23,7 +23,7 @@ public final class menuPrincipal extends JFrame {
 
     void visible() {
 
-        this.setTitle("Producto");
+        this.setTitle(" -- Empresa Textil -- ");
         this.setSize(450, 400);
         this.setBackground(Color.gray);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);

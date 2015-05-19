@@ -1,12 +1,10 @@
 package almacentextil;
 
 import java.awt.Color;
-import java.awt.event.*;
-import java.sql.*;
 import javax.swing.*;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
-public class Mostrar_producto extends JFrame {
+public final class Mostrar_producto extends JFrame {
 
     JPanel panel3;
 
@@ -19,7 +17,7 @@ public class Mostrar_producto extends JFrame {
         panel3 = (JPanel) this.getContentPane();
         panel3.setLayout(null);
 
-        this.setTitle("Producto");
+        this.setTitle(" -- Mostrar Productos --");
         this.setSize(450, 400);
         this.setBackground(Color.gray);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
