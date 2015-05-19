@@ -4,17 +4,24 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public final class Albaran extends JFrame {
 
     private final JTabbedPane tabbedPane;
-    private JPanel pestaña01;
-    private JPanel pestaña02;
-    private JPanel pestaña03;
+    private JTextField txt_ID;
+    private JTable tablaBD;
+    private JComboBox cmbox_ID;
+    private JButton btn_Limpiar, btn_Aceptar;
+    private JLabel lbl_Pedido, lbl_Envio;
+    private JPanel pestaña01, pestaña02, pestaña03;
     private String[] AÑOS;
     private String[] DIAS;
     final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
-
+    
+     //Para poder conectarse a la base de datos
+    private final conexionDB meConecto = new conexionDB();
+    
     public Albaran() {
 
         setTitle(" -- Albaran --");
@@ -48,6 +55,7 @@ public final class Albaran extends JFrame {
     //--------------------------------------------------------------------------
     //Primera Pestaña
     public void crearPestaña01() {
+        
         pestaña01 = new JPanel();
         pestaña01.setLayout(null);
 
@@ -55,9 +63,9 @@ public final class Albaran extends JFrame {
         lblID.setBounds(10, 15, 80, 20);
         pestaña01.add(lblID);
 
-        JTextField txtID = new JTextField();
-        txtID.setBounds(100, 15, 150, 20);
-        txtID.addKeyListener(new KeyAdapter() {
+        txt_ID = new JTextField();
+        txt_ID.setBounds(100, 15, 150, 20);
+        txt_ID.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
                 char caracter = e.getKeyChar();
@@ -66,11 +74,11 @@ public final class Albaran extends JFrame {
                 }
             }
         });
-        pestaña01.add(txtID);
+        pestaña01.add(txt_ID);
 
-        JLabel lblPedido = new JLabel("ID Pedido:");
-        lblPedido.setBounds(10, 60, 80, 20);
-        pestaña01.add(lblPedido);
+        lbl_Pedido = new JLabel("ID Pedido:");
+        lbl_Pedido.setBounds(10, 60, 80, 20);
+        pestaña01.add(lbl_Pedido);
 
         JTextField txtPedido = new JTextField();
         txtPedido.setBounds(100, 60, 150, 20);
@@ -85,9 +93,9 @@ public final class Albaran extends JFrame {
         });
         pestaña01.add(txtPedido);
 
-        JLabel lblEnvio = new JLabel("Fecha Envio:");
-        lblEnvio.setBounds(10, 105, 80, 20);
-        pestaña01.add(lblEnvio);
+        lbl_Envio = new JLabel("Fecha Envio:");
+        lbl_Envio.setBounds(10, 105, 80, 20);
+        pestaña01.add(lbl_Envio);
 
         JComboBox cmboxDias = new JComboBox(DIAS);
         cmboxDias.setBounds(100, 105, 40, 20);
@@ -119,19 +127,19 @@ public final class Albaran extends JFrame {
         cmboxYear2.setBounds(250, 145, 80, 20);
         pestaña01.add(cmboxYear2);
 
-        JButton btnAceptar = new JButton("Aceptar");
-        btnAceptar.setBounds(220, 290, 80, 20);
-        pestaña01.add(btnAceptar);
+        btn_Aceptar = new JButton("Aceptar");
+        btn_Aceptar.setBounds(220, 290, 80, 20);
+        pestaña01.add(btn_Aceptar);
 
-        JButton btnLimpiar = new JButton("Limpiar");
-        btnLimpiar.setBounds(320, 290, 80, 20);
-        pestaña01.add(btnLimpiar);
+        btn_Limpiar = new JButton("Limpiar");
+        btn_Limpiar.setBounds(320, 290, 80, 20);
+        pestaña01.add(btn_Limpiar);
 
-        btnLimpiar.addActionListener(new ActionListener() {
+        btn_Limpiar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 try {
-                    txtID.setText("");
+                    txt_ID.setText("");
                     txtPedido.setText("");
                     cmboxDias.setSelectedIndex(0);
                     cmboxMeses.setSelectedIndex(0);
@@ -146,7 +154,7 @@ public final class Albaran extends JFrame {
             }
         });
 
-        btnAceptar.addActionListener(new ActionListener() {
+        btn_Aceptar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 try {
@@ -156,11 +164,11 @@ public final class Albaran extends JFrame {
                     String diaE = "", mesE = "", yearE = "";
                     String diaL = "", mesL = "", yearL = "";
 
-                    if (txtID.getText().equalsIgnoreCase("")) {
+                    if (txt_ID.getText().equalsIgnoreCase("")) {
                         JOptionPane.showMessageDialog(null, "ID Albaran Incorrecto", "Alerta", JOptionPane.INFORMATION_MESSAGE, null);
                         fallos++;
                     } else {
-                        idAlbaran = Integer.parseInt(txtID.getText());
+                        idAlbaran = Integer.parseInt(txt_ID.getText());
                     }
 
                     if (txtPedido.getText().equalsIgnoreCase("")) {
@@ -272,28 +280,25 @@ public final class Albaran extends JFrame {
     public void crearPestaña03() {
         pestaña03 = new JPanel();
         pestaña03.setLayout(null);
-
+        
+        cmbox_ID = new JComboBox();
+        cmbox_ID.setBounds(15, 5, 100, 20);
+        pestaña03.add(cmbox_ID);
+        
+        JButton btn_Buscar = new JButton("Buscar");
+        btn_Buscar.setBounds(334, 5, 90, 20);
+        pestaña03.add(btn_Buscar);
+        
         JTextArea area = new JTextArea();
         JScrollPane areaLista = new JScrollPane(area);
-        JButton btnBuscar = new JButton("Buscar");
-        final JSpinner spnID = new JSpinner();
-        JLabel lblID = new JLabel("ID: ");
-
-        spnID.setBounds(15, 5, 35, 25);
-        btnBuscar.setBounds(334, 5, 90, 20);
         areaLista.setBounds(5, 35, 420, 250);
-        area.setEditable(false);
-
         pestaña03.add(areaLista);
-        pestaña03.add(btnBuscar);
-        pestaña03.add(spnID);
-        pestaña03.add(lblID);
 
-        btnBuscar.addActionListener(new ActionListener() {
+        btn_Buscar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 try {
-                    int id = (Integer) spnID.getValue();
+                    int buscarA = (Integer) cmbox_ID.getSelectedItem();
 
                     try {
 
@@ -355,6 +360,49 @@ public final class Albaran extends JFrame {
             AÑOS[contador] = num;
             contador++;
         }
+    }
+    
+    public void llenarJtable() {
 
+        Connection miConexion = (Connection) meConecto.ConectarMysql();
+
+        try (Statement st = miConexion.createStatement()) {
+
+            //Para establecer el modelo al JTable
+            DefaultTableModel modelo = new DefaultTableModel();
+            tablaBD.setModel(modelo);
+
+            //Nuestra sentencia SQL
+            String sentencia = "SELECT * FROM `producto`";
+            Statement s = miConexion.createStatement();
+
+            //Almacenamos en un ResultSet
+            ResultSet rs = s.executeQuery(sentencia);
+
+            //Obteniendo la informacion de las columnas que estan siendo consultadas
+            ResultSetMetaData rsMd = rs.getMetaData();
+
+            //La cantidad de columnas que tiene la consulta
+            int cantidadColumnas = rsMd.getColumnCount();
+
+            //Establecer como cabezeras el nombre de las colimnas
+            for (int i = 1; i <= cantidadColumnas; i++) {
+                modelo.addColumn(rsMd.getColumnLabel(i));
+            }
+            //Creando las filas para el JTable
+            while (rs.next()) {
+                Object[] fila = new Object[cantidadColumnas];
+                cmbox_ID.addItem(rs.getInt("Id_producto"));
+                for (int i = 0; i < cantidadColumnas; i++) {
+                    fila[i] = rs.getObject(i + 1);
+                }
+                modelo.addRow(fila);
+            }
+            rs.close();
+            miConexion.close();
+        } catch (SQLException e) {
+            System.err.println("Se ha producido un Error! ");
+            System.err.println(e.getMessage());
+        }
     }
 }
