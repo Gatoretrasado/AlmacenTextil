@@ -10,6 +10,7 @@ public final class Mostrar_producto extends JFrame {
 
     JPanel panelMostrar;
     JButton btn_Buscar;
+    JButton btn_Volver;
     JLabel lblID;
     JScrollPane areaLista;
     JComboBox cmbox_ID;
@@ -40,8 +41,12 @@ public final class Mostrar_producto extends JFrame {
         scroll.setBounds(5, 35, 420, 320);
         panelMostrar.add(scroll);
 
+        btn_Volver = new JButton("Volver");
+        btn_Volver.setBounds(334, 5, 90, 20);
+        panelMostrar.add(btn_Volver);
+
         btn_Buscar = new JButton("Buscar");
-        btn_Buscar.setBounds(334, 5, 90, 20);
+        btn_Buscar.setBounds(235, 5, 90, 20);
         panelMostrar.add(btn_Buscar);
 
         cmbox_ID = new JComboBox();
@@ -96,6 +101,13 @@ public final class Mostrar_producto extends JFrame {
                     ex.printStackTrace();
                 }
 
+            }
+        });
+
+        btn_Volver.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                dispose();
             }
         });
     }
