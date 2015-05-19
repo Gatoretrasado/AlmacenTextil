@@ -1,12 +1,23 @@
 package almacentextil;
 
-import java.awt.Color;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
 import javax.swing.*;
-import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
+import javax.swing.table.*;
 
 public final class Mostrar_producto extends JFrame {
 
-    JPanel panel3;
+    JPanel panelMostrar;
+    JButton btn_Buscar;
+    JLabel lblID;
+    JScrollPane areaLista;
+    JSpinner spnID;
+    JTable tablaBD;
+
+    String servidor = "jdbc:mysql://localhost:3306/almacentextil?zeroDateTimeBehavior=convertToNull";
+    String usuarioDB = "root";
+    String passwordDB = "";
 
     public Mostrar_producto() {
         visible();
@@ -14,8 +25,8 @@ public final class Mostrar_producto extends JFrame {
 
     void visible() {
 
-        panel3 = (JPanel) this.getContentPane();
-        panel3.setLayout(null);
+        panelMostrar = (JPanel) this.getContentPane();
+        panelMostrar.setLayout(null);
 
         this.setTitle(" -- Mostrar Productos --");
         this.setSize(450, 400);
@@ -23,78 +34,103 @@ public final class Mostrar_producto extends JFrame {
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+        
+        tablaBD = new JTable();
+        tablaBD.setBounds(5, 35, 420, 320);
+        panelMostrar.add(tablaBD);
+        
+        btn_Buscar = new JButton("Buscar");
+        btn_Buscar.setBounds(334, 5, 90, 20);
+        panelMostrar.add(btn_Buscar);
 
-        JButton aceptar3 = new JButton("Aceptar");
-        aceptar3.setBounds(220, 290, 80, 25);
-        panel3.add(aceptar3);
-
-        JButton limpiar3 = new JButton("Limpiar");
-        limpiar3.setBounds(320, 290, 80, 25);
-        panel3.add(limpiar3);
-
-        JTextArea area = new JTextArea();
-        JScrollPane areaLista = new JScrollPane(area);
-        JButton btnBuscar = new JButton("Buscar");
-        final JSpinner spnID = new JSpinner();
-        JLabel lblID = new JLabel("ID: ");
-
+        spnID = new JSpinner();
         spnID.setBounds(15, 5, 35, 25);
-        btnBuscar.setBounds(334, 5, 90, 20);
-        areaLista.setBounds(5, 35, 420, 250);
-        area.setEditable(false);
+        panelMostrar.add(spnID);
 
-        panel3.add(areaLista);
-        panel3.add(btnBuscar);
-        panel3.add(spnID);
-        panel3.add(lblID);
+        lblID = new JLabel("ID: ");
+        panelMostrar.add(lblID);
 
-        /*btnBuscar.addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(ActionEvent evt) {
-         try {
-         int id = (Integer) spnID.getValue();
+        meConecto();
 
-         try {
+        btn_Buscar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
 
-         System.out.println("----- Empezamos");
+                try {
+                    //Para establecer el modelo al JTable
+                    DefaultTableModel modelo = new DefaultTableModel();
+                    tablaBD.setModel(modelo);
+                    
+                    //Para conectarnos a nuestra base de datos
+                    DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+                    Connection conexion = DriverManager.getConnection(servidor, usuarioDB, passwordDB);
+                    
+                    //Para ejecutar la consulta
+                    String query = "SELECT * FROM `producto`";
+                    Statement s = conexion.createStatement();
+                    
+                    //Ejecutamos la consulta que escribimos en la caja de texto
+                    //y los datos lo almacenamos en un ResultSet
+                    ResultSet rs = s.executeQuery(query);
 
-         //Paso01 Cargamos los drivers
-         DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+                    //Obteniendo la informacion de las columnas que estan siendo consultadas
+                    ResultSetMetaData rsMd = rs.getMetaData();
 
-         //Paso02 Creamos el Objeto para la conexion 
-         Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "damlocal", "case");
-         System.out.println(" Parece ser que nos hemos conectado");
+                    //La cantidad de columnas que tiene la consulta
+                    int cantidadColumnas = rsMd.getColumnCount();
 
-         //Paso03 Creamos el objeto para la sentencia  
-         PreparedStatement prst = con.prepareStatement("select * from producto");
+                    //Establecer como cabezeras el nombre de las colimnas
+                    for (int i = 1; i <= cantidadColumnas; i++) {
+                        modelo.addColumn(rsMd.getColumnLabel(i));
+                    }
+                    //Creando las filas para el JTable
+                    while (rs.next()) {
+                        Object[] fila = new Object[cantidadColumnas];
+                        for (int i = 0; i < cantidadColumnas; i++) {
+                            fila[i] = rs.getObject(i + 1);
+                        }
+                        modelo.addRow(fila);
+                    }
+                    rs.close();
+                    conexion.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
 
-         //Paso04 Ejecutamos la sentencia
-         ResultSet rsst = prst.executeQuery();
-         System.out.println("la sentencia es: " + rsst);
-         System.out.println("---- Ejecutmamos la sentencia");
+            }
+        });
+    }
 
-         while (rsst.next()) {
-         for (int i = 1; i <= 6; i++) {
-         System.out.print(rsst.getString(i) + '\t');
-         }
-         System.out.println();
-         System.out.println("Estamos en la fila  :" + rsst.getRow());
-         }
+    public void meConecto() {
+        try {
+            //Creamos nuestra conexion a la BD mysql
+            Class.forName("com.mysql.jdbc.Driver");
+            
+            Connection conexion = DriverManager.getConnection(servidor, usuarioDB, passwordDB);
 
-         //Paso05 Cerramos la Conexion  
-         con.close();
-         System.out.println("---Cerramos la conexion");
+            //Nuestra sentencia SQL
+            String query = "SELECT * FROM `producto`";
 
-         } catch (SQLException sqle) {
-         System.out.println();
-         System.out.println(" Parece ser que nos hemos fallado");
-         sqle.printStackTrace();
-         System.out.println(sqle.getErrorCode() + " - " + sqle.getMessage());
-         }
-         } catch (Exception err) {
-         System.out.println("Error 02");
-         }
-         }
-         });*/
+            //Creamos la sentencia en Java
+            Statement st = conexion.createStatement();
+
+            // Ejecutamos la sentencia y almacenamos el resultado
+            ResultSet rs = st.executeQuery(query);
+
+            //Recoremos el ResultSet para ir mostrando los datos.
+            while (rs.next()) {
+                int id = rs.getInt("Id_producto");
+                String nombre = rs.getString("Nombre");
+                String desc = rs.getString("Descrip");
+                int Precio = rs.getInt("Precio_uni");
+
+                //Mostramos el Resultado
+                System.out.format("%s, %s, %s, %s\n", id, nombre, desc, Precio);
+            }
+            st.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            System.err.println("Se ha producido un Error! ");
+            System.err.println(e.getMessage());
+        }
     }
 }
