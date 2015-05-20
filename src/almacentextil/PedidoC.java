@@ -1,13 +1,8 @@
 package almacentextil;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.awt.event.*;
+import java.sql.*;
 import javax.swing.*;
 
 final class PedidoC extends JFrame {
@@ -17,6 +12,12 @@ final class PedidoC extends JFrame {
     private String[] AÑOS;
     private String[] DIAS;
     final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
+    private int ultimoID_Pedido;
+    private JTextField txt_IDPedido;
+    private JComboBox cmb_IDCliente;
+
+    //Para poder conectarse a la base de datos
+    private final conexionDB meConecto = new conexionDB();
 
     public PedidoC() {
 
@@ -43,6 +44,10 @@ final class PedidoC extends JFrame {
         tabbedPane.addTab("Añadir Productos", pestaña02);
         tabbedPane.addTab("Mostrar Pedido", pestaña03);
         topPanel.add(tabbedPane, BorderLayout.CENTER);
+
+        ejecutarPedido_CLi();
+        ejecutarClientes();
+
         setVisible(true);
     }
 
@@ -51,22 +56,22 @@ final class PedidoC extends JFrame {
         pestaña01 = new JPanel();
         pestaña01.setLayout(null);
 
-        JLabel lbl_idP = new JLabel("Id Pedido:");
-        lbl_idP.setBounds(30, 25, 68, 22);
-        pestaña01.add(lbl_idP);
+        JLabel lbl_IDPedido = new JLabel("Id Pedido:");
+        lbl_IDPedido.setBounds(30, 25, 68, 22);
+        pestaña01.add(lbl_IDPedido);
 
-        JTextField txt_idP = new JTextField();
-        txt_idP.setEditable(false);
-        txt_idP.setBounds(90, 25, 90, 20);
-        pestaña01.add(txt_idP);
+        txt_IDPedido = new JTextField();
+        txt_IDPedido.setEditable(false);
+        txt_IDPedido.setBounds(90, 25, 90, 20);
+        pestaña01.add(txt_IDPedido);
 
-        JLabel lbl_idCli = new JLabel("Id Cliente:");
-        lbl_idCli.setBounds(200, 25, 90, 20);
-        pestaña01.add(lbl_idCli);
+        JLabel lbl_IDCliente = new JLabel("Id Cliente:");
+        lbl_IDCliente.setBounds(200, 25, 90, 20);
+        pestaña01.add(lbl_IDCliente);
 
-        JTextField txt_idCli = new JTextField();
-        txt_idCli.setBounds(275, 25, 90, 20);
-        pestaña01.add(txt_idCli);
+        cmb_IDCliente = new JComboBox();
+        cmb_IDCliente.setBounds(275, 25, 90, 20);
+        pestaña01.add(cmb_IDCliente);
 
         JLabel lbl_Envio = new JLabel("Fecha Envio:");
         lbl_Envio.setBounds(10, 65, 80, 20);
@@ -84,7 +89,7 @@ final class PedidoC extends JFrame {
         JComboBox cmboxYear = new JComboBox(AÑOS);
         cmboxYear.setBounds(250, 65, 80, 20);
         pestaña01.add(cmboxYear);
-        
+
         JLabel lbllegada = new JLabel("Fecha Llegada:");
         lbllegada.setBounds(10, 100, 100, 20);
         pestaña01.add(lbllegada);
@@ -102,12 +107,89 @@ final class PedidoC extends JFrame {
         cmboxYear2.setBounds(250, 100, 80, 20);
         pestaña01.add(cmboxYear2);
 
-        JButton btn_acept = new JButton("Aceptar");
-        btn_acept.setBounds(200, 300, 90, 27);
-        pestaña01.add(btn_acept);
-        JButton btn_limp = new JButton("Limpiar");
-        btn_limp.setBounds(300, 300, 90, 27);
-        pestaña01.add(btn_limp);
+        JButton btn_Aceptar = new JButton("Añadir");
+        btn_Aceptar.setBounds(200, 300, 90, 27);
+        pestaña01.add(btn_Aceptar);
+        JButton btn_Limpiar = new JButton("Limpiar");
+        btn_Limpiar.setBounds(300, 300, 90, 27);
+        pestaña01.add(btn_Limpiar);
+
+        btn_Limpiar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    cmb_IDCliente.setSelectedIndex(0);
+                    cmboxDias.setSelectedIndex(0);
+                    cmboxMeses.setSelectedIndex(0);
+                    cmboxYear.setSelectedIndex(0);
+                    cmboxDias2.setSelectedIndex(0);
+                    cmboxMeses2.setSelectedIndex(0);
+                    cmboxYear2.setSelectedIndex(0);
+
+                } catch (Exception err) {
+                    System.out.println("Error: " + err);
+                }
+            }
+        });
+
+        btn_Aceptar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                int fallos = 0;
+
+                if (cmboxYear2.getSelectedIndex() >= cmboxYear.getSelectedIndex()) {
+                    if (cmboxMeses2.getSelectedIndex() >= cmboxMeses.getSelectedIndex()) {
+                        if (cmboxDias2.getSelectedIndex() >= cmboxDias.getSelectedIndex()) {
+                        } else {
+                            JOptionPane.showMessageDialog(null, "La fecha de Llegada no puede ser menor que la Fecha de Envio", "Alerta", JOptionPane.INFORMATION_MESSAGE, null);
+                            fallos++;
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "La fecha de Llegada no puede ser menor que la Fecha de Envio", "Alerta", JOptionPane.INFORMATION_MESSAGE, null);
+                        fallos++;
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "La fecha de Llegada no puede ser menor que la Fecha de Envio", "Alerta", JOptionPane.INFORMATION_MESSAGE, null);
+                    fallos++;
+                }
+
+                if (fallos == 0) {
+
+                    int IDPedido = Integer.parseInt(txt_IDPedido.getText());
+                    String IDCliente = (String) cmb_IDCliente.getSelectedItem();
+                    String fechaPedido = (String) cmboxYear.getSelectedItem() + "-" + ("0" + (cmboxMeses.getSelectedIndex() + 1)) + "-" + ("0" + (String) cmboxDias.getSelectedItem());
+                    String fechaLlegada = (String) cmboxYear2.getSelectedItem() + "-" + ("0" + (cmboxMeses2.getSelectedIndex() + 1)) + "-" + ("0" + (String) cmboxDias2.getSelectedItem());
+
+                    Connection miConexion = (Connection) meConecto.ConectarMysql();
+                    boolean insertado = false;
+                    
+                    try (Statement st = miConexion.createStatement()) {
+
+                        //Para ejecutar la consulta
+                        String query = "INSERT INTO `almacentextil`.`pedido_cli` (`Id_pedido`, `CIF_cli`, `Fecha_pedido`, `Fecha_llegada`) VALUES ('" + IDPedido + "', '" + IDCliente + "', '" + fechaPedido + "', '" + fechaLlegada + "')";
+                        
+                        Statement s = miConexion.createStatement();
+                        st.executeUpdate(query);
+                        insertado = true;
+
+                        miConexion.close();
+
+                        if (insertado == true) {
+                            JOptionPane.showMessageDialog(null, "Insertado Con Exito!", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+                            ejecutarClientes();
+                            ejecutarPedido_CLi();
+                        }
+
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, "Se ha producido un Error", "Error", JOptionPane.ERROR_MESSAGE);
+                        ex.printStackTrace();
+                        insertado = false;
+                    }
+
+                }
+
+            }
+        });
     }
 
     public void crearPestaña02() {
@@ -138,16 +220,16 @@ final class PedidoC extends JFrame {
         txt_precio.setBounds(90, 60, 50, 20);
         txt_precio.setEditable(false);
         pestaña02.add(txt_precio);
-        
+
         JLabel lbl_cantidad = new JLabel("Cantidad:");
         lbl_cantidad.setBounds(150, 60, 90, 20);
         pestaña02.add(lbl_cantidad);
 
-        SpinnerModel sm = new SpinnerNumberModel(0,0,10,1);   
+        SpinnerModel sm = new SpinnerNumberModel(0, 0, 10, 1);
         JSpinner spn_cantidad = new JSpinner(sm);
         spn_cantidad.setBounds(210, 60, 50, 20);
         pestaña02.add(spn_cantidad);
-        
+
         JLabel lbl_total = new JLabel("Total:");
         lbl_total.setBounds(270, 60, 90, 20);
         pestaña02.add(lbl_total);
@@ -168,7 +250,7 @@ final class PedidoC extends JFrame {
     public void crearPestaña03() {
         pestaña03 = new JPanel();
         pestaña03.setLayout(null);
-       
+
         JLabel lbl_idP = new JLabel("Id Pedido:");
         lbl_idP.setBounds(10, 25, 68, 22);
         pestaña03.add(lbl_idP);
@@ -194,7 +276,7 @@ final class PedidoC extends JFrame {
         txt_Envio.setEditable(false);
         txt_Envio.setBounds(90, 65, 90, 20);
         pestaña03.add(txt_Envio);
-        
+
         JLabel lbl_Pedido = new JLabel("Fecha Pedido:");
         lbl_Pedido.setBounds(200, 65, 80, 20);
         pestaña03.add(lbl_Pedido);
@@ -203,18 +285,16 @@ final class PedidoC extends JFrame {
         txt_Pedido.setEditable(false);
         txt_Pedido.setBounds(285, 65, 90, 20);
         pestaña03.add(txt_Pedido);
-        
-        
-        JButton btnBuscar = new JButton("Buscar");    
+
+        JButton btnBuscar = new JButton("Buscar");
         btnBuscar.setBounds(334, 5, 90, 20);
         pestaña03.add(btnBuscar);
 
-        
         btnBuscar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 try {
-                   // int id = (Integer) spnID.getValue();
+                    // int id = (Integer) spnID.getValue();
 
                     try {
 
@@ -261,7 +341,6 @@ final class PedidoC extends JFrame {
     }
 
     //Metodo para llenar los JComboBox
-
     void cargarFechas() {
 
         DIAS = new String[31];
@@ -276,6 +355,59 @@ final class PedidoC extends JFrame {
             String num = Integer.toString(a);
             AÑOS[contador] = num;
             contador++;
+        }
+    }
+
+    public void ejecutarPedido_CLi() {
+
+        Connection miConexion = (Connection) meConecto.ConectarMysql();
+
+        try (Statement st = miConexion.createStatement()) {
+
+            //Nuestra sentencia SQL
+            String sentencia = "SELECT * FROM `pedido_cli`";
+            Statement s = miConexion.createStatement();
+
+            //Almacenamos en un ResultSet
+            ResultSet rs = s.executeQuery(sentencia);
+
+            //Creando las filas para el JTable
+            while (rs.next()) {
+                ultimoID_Pedido = rs.getInt("Id_pedido");
+            }
+            rs.close();
+            miConexion.close();
+        } catch (SQLException e) {
+            System.err.println("Se ha producido un Error! ");
+            System.err.println(e.getMessage());
+        }
+
+        ultimoID_Pedido = ultimoID_Pedido + 1;
+        txt_IDPedido.setText(Integer.toString(ultimoID_Pedido));
+    }
+
+    public void ejecutarClientes() {
+
+        Connection miConexion = (Connection) meConecto.ConectarMysql();
+
+        try (Statement st = miConexion.createStatement()) {
+
+            //Nuestra sentencia SQL
+            String sentencia = "SELECT * FROM `cliente`";
+            Statement s = miConexion.createStatement();
+
+            //Almacenamos en un ResultSet
+            ResultSet rs = s.executeQuery(sentencia);
+
+            //Creando las filas para el JTable
+            while (rs.next()) {
+                cmb_IDCliente.addItem(rs.getString("CIF_Cli"));
+            }
+            rs.close();
+            miConexion.close();
+        } catch (SQLException e) {
+            System.err.println("Se ha producido un Error! ");
+            System.err.println(e.getMessage());
         }
     }
 }
