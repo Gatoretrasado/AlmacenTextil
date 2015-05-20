@@ -93,12 +93,11 @@ final class Producto extends JFrame {
 
         JTextField txt_PrecioU = new JTextField();
         txt_PrecioU.setBounds(80, 145, 100, 25);
-        txt_PrecioU.addKeyListener(new KeyAdapter() {    //Solo caracteres numericos y solo 9 digitos
+        txt_PrecioU.addKeyListener(new KeyAdapter() {    //Solo caracteres numericos 
             @Override
             public void keyTyped(KeyEvent e) {
-                int limitador = 9;
                 char caracter = e.getKeyChar();
-                if (((caracter < '0') || (caracter > '9')) && (caracter != '\b') || txt_PrecioU.getText().length() >= limitador) {
+                if (((caracter < '0') || (caracter > '9')) && (caracter != '\b') && (caracter != '.') && (caracter == ',')) {
                     e.consume();
                 }
             }
@@ -209,12 +208,11 @@ final class Producto extends JFrame {
 
         JTextField txt_PrecioU = new JTextField();
         txt_PrecioU.setBounds(80, 145, 100, 25);
-        txt_PrecioU.addKeyListener(new KeyAdapter() {    //Solo caracteres numericos y solo 9 digitos
+        txt_PrecioU.addKeyListener(new KeyAdapter() {    //Solo caracteres numericos 
             @Override
             public void keyTyped(KeyEvent e) {
-                int limitador = 9;
                 char caracter = e.getKeyChar();
-                if (((caracter < '0') || (caracter > '9')) && (caracter != '\b') || txt_PrecioU.getText().length() >= limitador) {
+                if (((caracter < '0') || (caracter > '9')) && (caracter != '\b') && (caracter != '.') && (caracter == ',')) {
                     e.consume();
                 }
             }
