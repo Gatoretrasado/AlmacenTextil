@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 final class PedidoC extends JFrame {
 
@@ -15,6 +16,8 @@ final class PedidoC extends JFrame {
     private int ultimoID_Pedido;
     private JTextField txt_IDPedido;
     private JComboBox cmb_IDCliente;
+    private JScrollPane scroll;
+    private JTable tablaBD;
 
     //Para poder conectarse a la base de datos
     private final conexionDB meConecto = new conexionDB();
@@ -107,6 +110,11 @@ final class PedidoC extends JFrame {
         cmboxYear2.setBounds(250, 100, 80, 20);
         pestaña01.add(cmboxYear2);
 
+        tablaBD = new JTable();
+        scroll = new JScrollPane(tablaBD);
+        scroll.setBounds(5, 125, 430, 170);
+        pestaña01.add(scroll);
+
         JButton btn_Aceptar = new JButton("Añadir");
         btn_Aceptar.setBounds(200, 300, 90, 27);
         pestaña01.add(btn_Aceptar);
@@ -162,12 +170,11 @@ final class PedidoC extends JFrame {
 
                     Connection miConexion = (Connection) meConecto.ConectarMysql();
                     boolean insertado = false;
-                    
+
                     try (Statement st = miConexion.createStatement()) {
 
                         //Para ejecutar la consulta
                         String query = "INSERT INTO `almacentextil`.`pedido_cli` (`Id_pedido`, `CIF_cli`, `Fecha_pedido`, `Fecha_llegada`) VALUES ('" + IDPedido + "', '" + IDCliente + "', '" + fechaPedido + "', '" + fechaLlegada + "')";
-                        
                         Statement s = miConexion.createStatement();
                         st.executeUpdate(query);
                         insertado = true;
@@ -364,6 +371,10 @@ final class PedidoC extends JFrame {
 
         try (Statement st = miConexion.createStatement()) {
 
+            //Para establecer el modelo al JTable
+            DefaultTableModel modelo = new DefaultTableModel();
+            tablaBD.setModel(modelo);
+
             //Nuestra sentencia SQL
             String sentencia = "SELECT * FROM `pedido_cli`";
             Statement s = miConexion.createStatement();
@@ -371,9 +382,25 @@ final class PedidoC extends JFrame {
             //Almacenamos en un ResultSet
             ResultSet rs = s.executeQuery(sentencia);
 
+            //Obteniendo la informacion de las columnas que estan siendo consultadas
+            ResultSetMetaData rsMd = rs.getMetaData();
+
+            //La cantidad de columnas que tiene la consulta
+            int cantidadColumnas = rsMd.getColumnCount();
+
+            //Establecer como cabezeras el nombre de las colimnas
+            for (int i = 1; i <= cantidadColumnas; i++) {
+                modelo.addColumn(rsMd.getColumnLabel(i));
+            }
             //Creando las filas para el JTable
             while (rs.next()) {
+                Object[] fila = new Object[cantidadColumnas];
                 ultimoID_Pedido = rs.getInt("Id_pedido");
+
+                for (int i = 0; i < cantidadColumnas; i++) {
+                    fila[i] = rs.getObject(i + 1);
+                }
+                modelo.addRow(fila);
             }
             rs.close();
             miConexion.close();
@@ -388,6 +415,7 @@ final class PedidoC extends JFrame {
 
     public void ejecutarClientes() {
 
+        cmb_IDCliente.removeAllItems();
         Connection miConexion = (Connection) meConecto.ConectarMysql();
 
         try (Statement st = miConexion.createStatement()) {
