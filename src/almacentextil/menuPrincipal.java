@@ -197,7 +197,17 @@ public final class menuPrincipal extends JFrame {
 
     private void btn_factActionPerformed(java.awt.event.ActionEvent evt) {
         try {
-            Factura f = new Factura();
+            int seleccion = JOptionPane.showOptionDialog(this, "¿Eres Cliente o Proveedor?", "Seleccione una opción", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Cliente", "Proveedor"}, "Cliente");
+
+            if (seleccion != -1) {
+                if ((seleccion + 1) == 1) {
+                    // Presiono Cliente
+                    FacturaC cliente = new FacturaC();
+                } else {
+                    // Presiono Proveedor
+                    //FacturaP proveedor = new FacturaP();
+                }
+            }
         } catch (Exception err) {
             System.out.println("Error 196: " + err);
         }
@@ -213,7 +223,17 @@ public final class menuPrincipal extends JFrame {
 
     private void btn_albActionPerformed(java.awt.event.ActionEvent evt) {
         try {
-            Albaran albaran = new Albaran();
+            int seleccion = JOptionPane.showOptionDialog(this, "¿Eres Cliente o Proveedor?", "Seleccione una opción", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Cliente", "Proveedor"}, "Cliente");
+
+            if (seleccion != -1) {
+                if ((seleccion + 1) == 1) {
+                    // Presiono Cliente
+                    AlbaranC cliente = new AlbaranC();
+                } else {
+                    // Presiono Proveedor
+                    //AlabaranP proveedor = new AlbaranP();
+                }
+            }
         } catch (Exception err) {
             System.out.println("Error 212: " + err);
         }

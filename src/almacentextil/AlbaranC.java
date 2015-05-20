@@ -6,7 +6,7 @@ import java.sql.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public final class Albaran extends JFrame {
+public final class AlbaranC extends JFrame {
 
     private final JTabbedPane tabbedPane;
     private JTextField txt_ID;
@@ -23,7 +23,7 @@ public final class Albaran extends JFrame {
     //Para poder conectarse a la base de datos
     private final conexionDB meConecto = new conexionDB();
 
-    public Albaran() {
+    public AlbaranC() {
 
         setTitle(" -- Albaran --");
         setSize(450, 400);
