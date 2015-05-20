@@ -194,7 +194,7 @@ public final class menuPrincipal extends JFrame {
         try {
             Factura f = new Factura();
         } catch (Exception err) {
-            System.out.println("Error 196: "+err);
+            System.out.println("Error 196: " + err);
         }
     }
 
@@ -202,7 +202,7 @@ public final class menuPrincipal extends JFrame {
         try {
             Mostrar_producto mp = new Mostrar_producto();
         } catch (Exception err) {
-            System.out.println("Error 204: "+err);
+            System.out.println("Error 204: " + err);
         }
     }
 
@@ -210,7 +210,7 @@ public final class menuPrincipal extends JFrame {
         try {
             Albaran albaran = new Albaran();
         } catch (Exception err) {
-            System.out.println("Error 212: "+err);
+            System.out.println("Error 212: " + err);
         }
     }
 
@@ -218,15 +218,26 @@ public final class menuPrincipal extends JFrame {
         try {
             menuDatos md = new menuDatos();
         } catch (Exception err) {
-            System.out.println("Error 220: "+err);
+            System.out.println("Error 220: " + err);
         }
     }
 
     private void btn_pedActionPerformed(java.awt.event.ActionEvent evt) {
         try {
-            Pedido p = new Pedido();
+
+            int seleccion = JOptionPane.showOptionDialog(this, "¿Eres Cliente o Proveedor?", "Seleccione una opción", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Cliente", "Proveedor"}, "Cliente");
+
+            if (seleccion != -1) {
+                if ((seleccion + 1) == 1) {
+                    // Presiono Cliente
+                    PedidoC cliente = new PedidoC();
+                } else {
+                    // Presiono Proveedor
+                    //PedidoP proveedor = new PedidoP();
+                }
+            }
         } catch (Exception err) {
-            System.out.println("Error 228: "+err);
+            System.out.println("Error 228: " + err);
         }
     }
 
