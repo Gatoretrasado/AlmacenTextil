@@ -48,6 +48,7 @@ public class menuDatos extends JFrame {
         this.setTitle("Datos");
         //Cierra el programa al salir
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        this.setResizable(false);
 
         btn_prov.addActionListener(new ActionListener() {
             @Override

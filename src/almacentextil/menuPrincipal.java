@@ -28,6 +28,7 @@ public final class menuPrincipal extends JFrame {
         this.setBackground(Color.gray);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null);
+        this.setResizable(false);
         this.setVisible(true);
 
         btn_fact = new javax.swing.JButton();
