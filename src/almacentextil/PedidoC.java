@@ -16,8 +16,8 @@ final class PedidoC extends JFrame {
     private int ultimoID_Pedido;
     private JTextField txt_IDPedido;
     private JComboBox cmb_IDCliente, cmb_IDPedido, cmb_IDProd;
-    private JScrollPane scroll;
-    private JTable tablaBD;
+    private JScrollPane scroll, scroll2;
+    private JTable tablaBD, tablaBD2;
 
     //Para poder conectarse a la base de datos
     private final conexionDB meConecto = new conexionDB();
@@ -51,6 +51,7 @@ final class PedidoC extends JFrame {
         ejecutarPedido_CLi();
         ejecutarClientes();
         ejecutarProductos();
+        ejecutarLineasPedido();
 
         setVisible(true);
     }
@@ -187,6 +188,7 @@ final class PedidoC extends JFrame {
                             ejecutarClientes();
                             ejecutarPedido_CLi();
                             ejecutarProductos();
+                            ejecutarLineasPedido();
                         }
 
                     } catch (Exception ex) {
@@ -248,6 +250,11 @@ final class PedidoC extends JFrame {
         txt_total.setEditable(false);
         pestaña02.add(txt_total);
 
+        tablaBD2 = new JTable();
+        scroll2 = new JScrollPane(tablaBD2);
+        scroll2.setBounds(5, 125, 430, 170);
+        pestaña02.add(scroll2);
+
         JButton btn_Suma = new JButton("Sum");
         btn_Suma.setBounds(370, 60, 60, 20);
         pestaña02.add(btn_Suma);
@@ -300,7 +307,10 @@ final class PedidoC extends JFrame {
 
                             if (eliminado == true) {
                                 JOptionPane.showMessageDialog(null, "Eliminado Con Exito!", "Eliminado", JOptionPane.INFORMATION_MESSAGE);
-
+                                ejecutarClientes();
+                                ejecutarPedido_CLi();
+                                ejecutarProductos();
+                                ejecutarLineasPedido();
                             }
 
                         } catch (Exception ex) {
@@ -428,6 +438,7 @@ final class PedidoC extends JFrame {
                                     ejecutarClientes();
                                     ejecutarPedido_CLi();
                                     ejecutarProductos();
+                                    ejecutarLineasPedido();
                                 }
 
                             } catch (Exception ex) {
@@ -648,6 +659,50 @@ final class PedidoC extends JFrame {
             //Creando las filas para el JTable
             while (rs.next()) {
                 cmb_IDProd.addItem(rs.getInt("Id_producto"));
+            }
+            rs.close();
+            miConexion.close();
+        } catch (SQLException e) {
+            System.err.println("Se ha producido un Error! ");
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public void ejecutarLineasPedido() {
+
+        Connection miConexion = (Connection) meConecto.ConectarMysql();
+
+        try (Statement st = miConexion.createStatement()) {
+
+            //Para establecer el modelo al JTable
+            DefaultTableModel modelo = new DefaultTableModel();
+            tablaBD2.setModel(modelo);
+
+            //Nuestra sentencia SQL
+            String sentencia = "SELECT * FROM `linea_pedido_cli` ORDER BY `Id_pedido` ASC";
+            Statement s = miConexion.createStatement();
+
+            //Almacenamos en un ResultSet
+            ResultSet rs = s.executeQuery(sentencia);
+
+            //Obteniendo la informacion de las columnas que estan siendo consultadas
+            ResultSetMetaData rsMd = rs.getMetaData();
+
+            //La cantidad de columnas que tiene la consulta
+            int cantidadColumnas = rsMd.getColumnCount();
+
+            //Establecer como cabezeras el nombre de las colimnas
+            for (int i = 1; i <= cantidadColumnas; i++) {
+                modelo.addColumn(rsMd.getColumnLabel(i));
+            }
+            //Creando las filas para el JTable
+            while (rs.next()) {
+                Object[] fila = new Object[cantidadColumnas];
+
+                for (int i = 0; i < cantidadColumnas; i++) {
+                    fila[i] = rs.getObject(i + 1);
+                }
+                modelo.addRow(fila);
             }
             rs.close();
             miConexion.close();
