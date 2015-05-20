@@ -3,11 +3,13 @@ package almacentextil;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 final class Cliente extends JFrame {
 
+    private ArrayList<String> PAISES = new ArrayList<>();
     private final JTabbedPane tabbedPane;
     private JPanel pestaña01, pestaña02, pestaña03;
     private JTable tablaBD;
@@ -564,6 +566,9 @@ final class Cliente extends JFrame {
 
         cmbox_CIF.removeAllItems();
         cmbox_CIF2.removeAllItems();
+        cmbox_Pais1.removeAllItems();
+        cmbox_Pais2.removeAllItems();
+        PAISES.clear();
 
         Connection miConexion = (Connection) meConecto.ConectarMysql();
 
@@ -574,7 +579,7 @@ final class Cliente extends JFrame {
             tablaBD.setModel(modelo);
 
             //Nuestra sentencia SQL
-            String sentencia = "SELECT * FROM `cliente`";
+            String sentencia = "SELECT * FROM `proveedor`";
             Statement s = miConexion.createStatement();
 
             //Almacenamos en un ResultSet
@@ -592,11 +597,15 @@ final class Cliente extends JFrame {
             }
             //Creando las filas para el JTable
             while (rs.next()) {
+
                 Object[] fila = new Object[cantidadColumnas];
-                cmbox_CIF.addItem(rs.getString("CIF_Cli"));
-                cmbox_CIF2.addItem(rs.getString("CIF_Cli"));
-                cmbox_Pais1.addItem(rs.getString("Pais"));
-                cmbox_Pais2.addItem(rs.getString("Pais"));
+                cmbox_CIF.addItem(rs.getString("CIF_Prov"));
+                cmbox_CIF2.addItem(rs.getString("CIF_Prov"));
+
+                if (!PAISES.contains(rs.getString("Pais"))) {
+                    PAISES.add(rs.getString("Pais"));
+                }
+
                 for (int i = 0; i < cantidadColumnas; i++) {
                     fila[i] = rs.getObject(i + 1);
                 }
@@ -608,5 +617,11 @@ final class Cliente extends JFrame {
             System.err.println("Se ha producido un Error! ");
             System.err.println(e.getMessage());
         }
+
+        for (String Pais : PAISES) {
+            cmbox_Pais1.addItem(Pais);
+            cmbox_Pais2.addItem(Pais);
+        }
+
     }
 }
