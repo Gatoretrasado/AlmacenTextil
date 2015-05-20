@@ -3,25 +3,25 @@ package almacentextil;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
-import java.util.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 final class Producto extends JFrame {
 
-    private ArrayList<String> PAISES = new ArrayList<>();
     private final JTabbedPane tabbedPane;
     private JPanel pestaña01, pestaña02, pestaña03;
     private JTable tablaBD;
-    private JComboBox cmbox_CIF, cmbox_CIF2, cmbox_Pais1, cmbox_Pais2;
+    private JTextField txt_ID;
+    private JComboBox cmbox_ID, cmbox_ID2;
     private JScrollPane scroll;
+    private int ultimoID;
 
     //Para poder conectarse a la base de datos
     private final conexionDB meConecto = new conexionDB();
 
     public Producto() {
 
-        setTitle(" -- Proveedor -- ");
+        setTitle(" -- Producto -- ");
         setSize(450, 400);
         setBackground(Color.gray);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -31,7 +31,7 @@ final class Producto extends JFrame {
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
         getContentPane().add(topPanel);
-
+        
         // Create the tab pages
         crearPestaña01();
         crearPestaña02();
@@ -52,23 +52,15 @@ final class Producto extends JFrame {
         pestaña01 = new JPanel();
         pestaña01.setLayout(null);
 
-        JLabel lbl_CIF = new JLabel("CIF:");
-        lbl_CIF.setBounds(10, 15, 50, 25);
-        pestaña01.add(lbl_CIF);
+        JLabel lbl_ID = new JLabel("ID: ");
+        lbl_ID.setBounds(10, 15, 50, 25);
+        pestaña01.add(lbl_ID);
 
-        JTextField txt_CIF = new JTextField();
-        txt_CIF.setBounds(80, 15, 100, 25);
-        txt_CIF.addKeyListener(new KeyAdapter() {    //Solo caracteres numericos y solo 9 digitos
-            @Override
-            public void keyTyped(KeyEvent e) {
-                int limitador = 9;
-                char caracter = e.getKeyChar();
-                if (txt_CIF.getText().length() >= limitador) {
-                    e.consume();
-                }
-            }
-        });
-        pestaña01.add(txt_CIF);
+        txt_ID = new JTextField();
+        txt_ID.setBounds(80, 15, 100, 25);
+        txt_ID.setEditable(false);
+        txt_ID.setText(Integer.toString(ultimoID));
+        pestaña01.add(txt_ID);
 
         JLabel lbl_Nombre = new JLabel("Nombre:");
         lbl_Nombre.setBounds(10, 60, 150, 25);
@@ -87,56 +79,30 @@ final class Producto extends JFrame {
         });
         pestaña01.add(txt_Nombre);
 
-        JLabel lbl_Dicreccion = new JLabel("Direccion:");
-        lbl_Dicreccion.setBounds(10, 105, 100, 25);
-        pestaña01.add(lbl_Dicreccion);
+        JLabel lbl_Descrip = new JLabel("Descripcion:");
+        lbl_Descrip.setBounds(10, 105, 100, 25);
+        pestaña01.add(lbl_Descrip);
 
-        JTextField txt_Direccion = new JTextField();
-        txt_Direccion.setBounds(80, 105, 300, 25);
-        pestaña01.add(txt_Direccion);
+        JTextField txt_Descrip = new JTextField();
+        txt_Descrip.setBounds(80, 105, 300, 25);
+        pestaña01.add(txt_Descrip);
 
-        JLabel lbl_Ciudad = new JLabel("Ciudad:");
-        lbl_Ciudad.setBounds(10, 145, 80, 25);
-        pestaña01.add(lbl_Ciudad);
+        JLabel lbl_PrecioU = new JLabel("Precio U.:");
+        lbl_PrecioU.setBounds(10, 145, 80, 25);
+        pestaña01.add(lbl_PrecioU);
 
-        JTextField txt_Ciudad = new JTextField();
-        txt_Ciudad.setBounds(80, 145, 100, 25);
-        txt_Ciudad.addKeyListener(new KeyAdapter() {    //Solo caracteres Alfabeticos
+        JTextField txt_PrecioU = new JTextField();
+        txt_PrecioU.setBounds(80, 145, 100, 25);
+        txt_PrecioU.addKeyListener(new KeyAdapter() {    //Solo caracteres numericos 
             @Override
             public void keyTyped(KeyEvent e) {
-                char ch = e.getKeyChar();
-                if (Character.isDigit(ch)) {
-                    e.consume();
-                }
-            }
-        });
-        pestaña01.add(txt_Ciudad);
-
-        JLabel lbl_Pais = new JLabel("Pais:");
-        lbl_Pais.setBounds(210, 145, 80, 25);
-        pestaña01.add(lbl_Pais);
-
-        cmbox_Pais1 = new JComboBox();
-        cmbox_Pais1.setBounds(270, 145, 100, 25);
-        pestaña01.add(cmbox_Pais1);
-
-        JLabel lbl_Telefono = new JLabel("Telefono: ");
-        lbl_Telefono.setBounds(10, 185, 80, 25);
-        pestaña01.add(lbl_Telefono);
-
-        JTextField txt_Telefono = new JTextField();
-        txt_Telefono.setBounds(80, 185, 100, 25);
-        txt_Telefono.addKeyListener(new KeyAdapter() {    //Solo caracteres numericos y solo 9 digitos
-            @Override
-            public void keyTyped(KeyEvent e) {
-                int limitador = 9;
                 char caracter = e.getKeyChar();
-                if (((caracter < '0') || (caracter > '9')) && (caracter != '\b') || txt_Telefono.getText().length() >= limitador) {
+                if (((caracter < '0') || (caracter > '9')) && (caracter != '\b') && (caracter != '.') && (caracter == ',')) {
                     e.consume();
                 }
             }
         });
-        pestaña01.add(txt_Telefono);
+        pestaña01.add(txt_PrecioU);
 
         JButton btn_Insertar = new JButton("Insertar");
         btn_Insertar.setBounds(220, 290, 80, 25);
@@ -150,12 +116,9 @@ final class Producto extends JFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 try {
-                    txt_CIF.setText("");
                     txt_Nombre.setText("");
-                    txt_Direccion.setText("");
-                    txt_Ciudad.setText("");
-                    cmbox_Pais1.setSelectedIndex(0);
-                    txt_Telefono.setText("");
+                    txt_Descrip.setText("");
+                    txt_PrecioU.setText("");
 
                 } catch (Exception err) {
                     System.out.println("Error: " + err);
@@ -168,20 +131,18 @@ final class Producto extends JFrame {
             public void actionPerformed(ActionEvent evt) {
 
                 boolean insertado = false;
-                String CIF = txt_CIF.getText();
+                
+                String ID = txt_ID.getText();
                 String Nombre = txt_Nombre.getText();
-                String Direccion = txt_Direccion.getText();
-                String Ciudad = txt_Ciudad.getText();
-                String Pais = (String) cmbox_Pais1.getSelectedItem();
-                int Telefono = Integer.parseInt(txt_Telefono.getText());
+                String Descrip = txt_Descrip.getText();
+                String Precio = txt_PrecioU.getText();
 
                 Connection miConexion = (Connection) meConecto.ConectarMysql();
 
                 try (Statement st = miConexion.createStatement()) {
 
                     //Para ejecutar la consulta
-                    String query = "INSERT INTO `almacentextil`.`proveedor` (`CIF_Prov`, `Nombre`, `Direccion`, `Ciudad`, `Pais`, `Telefono`) VALUES ('" + CIF + "', '" + Nombre + "', '" + Direccion + "', '" + Ciudad + "', '" + Pais + "', '" + Telefono + "')";
-
+                    String query = "INSERT INTO `almacentextil`.`producto` (`Id_producto`, `Nombre`, `Descrip`, `Precio_uni`) VALUES ('" + ID + "', '" + Nombre + "', '" + Descrip + "', '" + Precio + "')";
                     Statement s = miConexion.createStatement();
                     st.executeUpdate(query);
                     insertado = true;
@@ -208,13 +169,13 @@ final class Producto extends JFrame {
         pestaña02 = new JPanel();
         pestaña02.setLayout(null);
 
-        JLabel lbl_CIF = new JLabel("CIF:");
-        lbl_CIF.setBounds(10, 15, 50, 25);
-        pestaña02.add(lbl_CIF);
+        JLabel lbl_ID = new JLabel("ID: ");
+        lbl_ID.setBounds(10, 15, 50, 25);
+        pestaña02.add(lbl_ID);
 
-        cmbox_CIF2 = new JComboBox();
-        cmbox_CIF2.setBounds(80, 15, 100, 25);
-        pestaña02.add(cmbox_CIF2);
+        cmbox_ID2 = new JComboBox();
+        cmbox_ID2.setBounds(80, 15, 100, 25);
+        pestaña02.add(cmbox_ID2);
 
         JLabel lbl_Nombre = new JLabel("Nombre:");
         lbl_Nombre.setBounds(10, 60, 150, 25);
@@ -233,56 +194,30 @@ final class Producto extends JFrame {
         });
         pestaña02.add(txt_Nombre);
 
-        JLabel lbl_Direccion = new JLabel("Direccion:");
-        lbl_Direccion.setBounds(10, 105, 100, 25);
-        pestaña02.add(lbl_Direccion);
+        JLabel lbl_Descrip = new JLabel("Descripcion:");
+        lbl_Descrip.setBounds(10, 105, 100, 25);
+        pestaña02.add(lbl_Descrip);
 
-        JTextField txt_Direccion = new JTextField();
-        txt_Direccion.setBounds(80, 105, 300, 25);
-        pestaña02.add(txt_Direccion);
+        JTextField txt_Descrip = new JTextField();
+        txt_Descrip.setBounds(80, 105, 300, 25);
+        pestaña02.add(txt_Descrip);
 
-        JLabel lbl_Ciudad = new JLabel("Ciudad:");
-        lbl_Ciudad.setBounds(10, 145, 80, 25);
-        pestaña02.add(lbl_Ciudad);
+        JLabel lbl_PrecioU = new JLabel("Precio U.:");
+        lbl_PrecioU.setBounds(10, 145, 80, 25);
+        pestaña02.add(lbl_PrecioU);
 
-        JTextField txt_Ciudad = new JTextField();
-        txt_Ciudad.setBounds(80, 145, 100, 25);
-        txt_Ciudad.addKeyListener(new KeyAdapter() {    //Solo caracteres Alfabeticos
+        JTextField txt_PrecioU = new JTextField();
+        txt_PrecioU.setBounds(80, 145, 100, 25);
+        txt_PrecioU.addKeyListener(new KeyAdapter() {    //Solo caracteres numericos 
             @Override
             public void keyTyped(KeyEvent e) {
-                char ch = e.getKeyChar();
-                if (Character.isDigit(ch)) {
-                    e.consume();
-                }
-            }
-        });
-        pestaña02.add(txt_Ciudad);
-
-        JLabel lbl_Pais = new JLabel("Pais:");
-        lbl_Pais.setBounds(210, 145, 80, 25);
-        pestaña02.add(lbl_Pais);
-
-        cmbox_Pais2 = new JComboBox();
-        cmbox_Pais2.setBounds(270, 145, 100, 25);
-        pestaña02.add(cmbox_Pais2);
-
-        JLabel lbl_Telefono = new JLabel("Telefono:");
-        lbl_Telefono.setBounds(10, 185, 80, 25);
-        pestaña02.add(lbl_Telefono);
-
-        JTextField txt_Telefono = new JTextField();
-        txt_Telefono.setBounds(80, 185, 100, 25);
-        txt_Telefono.addKeyListener(new KeyAdapter() {    //Solo caracteres numericos y solo 9 digitos
-            @Override
-            public void keyTyped(KeyEvent e) {
-                int limitador = 9;
                 char caracter = e.getKeyChar();
-                if (((caracter < '0') || (caracter > '9')) && (caracter != '\b') || txt_Telefono.getText().length() >= limitador) {
+                if (((caracter < '0') || (caracter > '9')) && (caracter != '\b') && (caracter != '.') && (caracter == ',')) {
                     e.consume();
                 }
             }
         });
-        pestaña02.add(txt_Telefono);
+        pestaña02.add(txt_PrecioU);
 
         JButton btn_Eliminar = new JButton("Eliminar");
         btn_Eliminar.setBounds(30, 290, 80, 25);
@@ -306,12 +241,10 @@ final class Producto extends JFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 try {
-                    cmbox_CIF2.setSelectedIndex(0);
+                    cmbox_ID2.setSelectedIndex(0);
                     txt_Nombre.setText("");
-                    txt_Direccion.setText("");
-                    txt_Ciudad.setText("");
-                    cmbox_Pais2.setSelectedIndex(0);
-                    txt_Telefono.setText("");
+                    txt_Descrip.setText("");
+                    txt_PrecioU.setText("");
 
                 } catch (Exception err) {
                     System.out.println("Error: " + err);
@@ -323,14 +256,14 @@ final class Producto extends JFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
 
-                String buscarA = (String) cmbox_CIF2.getSelectedItem();
+                int buscarA = (Integer) cmbox_ID2.getSelectedItem();
 
                 Connection miConexion = (Connection) meConecto.ConectarMysql();
 
                 try (Statement st = miConexion.createStatement()) {
 
                     //Para ejecutar la consulta
-                    String query = "SELECT * FROM `proveedor` WHERE `CIF_Prov` LIKE '" + buscarA + "'";
+                    String query = "SELECT * FROM `producto` WHERE `Id_producto` = " + buscarA + "";
                     Statement s = miConexion.createStatement();
 
                     //Almacenamos en un ResultSet
@@ -343,10 +276,8 @@ final class Producto extends JFrame {
                     while (rs.next()) {
 
                         txt_Nombre.setText(rs.getString("Nombre"));
-                        txt_Direccion.setText(rs.getString("Direccion"));
-                        txt_Ciudad.setText(rs.getString("Ciudad"));
-                        cmbox_Pais2.setSelectedItem(rs.getString("Pais"));
-                        txt_Telefono.setText(rs.getString("Telefono"));
+                        txt_Descrip.setText(rs.getString("Descrip"));
+                        txt_PrecioU.setText(rs.getString("Precio_uni"));
 
                     }
                     rs.close();
@@ -362,12 +293,12 @@ final class Producto extends JFrame {
             public void actionPerformed(ActionEvent evt) {
 
                 boolean eliminado = false;
-                String eliminarA = (String) cmbox_CIF2.getSelectedItem();
+                int eliminarA = (Integer) cmbox_ID2.getSelectedItem();
 
                 if (txt_Nombre.getText().equalsIgnoreCase("")) {
-                    JOptionPane.showMessageDialog(null, "Seleccione un proveedor", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Seleccione un Producto", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    int Borrar = JOptionPane.showConfirmDialog(null, "Desea Eliminar a: " + txt_Nombre.getText());
+                    int Borrar = JOptionPane.showConfirmDialog(null, "Desea Eliminar : " + txt_Nombre.getText());
 
                     if (JOptionPane.OK_OPTION == Borrar) {
                         Connection miConexion = (Connection) meConecto.ConectarMysql();
@@ -375,7 +306,7 @@ final class Producto extends JFrame {
                         try (Statement st = miConexion.createStatement()) {
 
                             //Para ejecutar la consulta
-                            String query = "DELETE FROM `almacentextil`.`proveedor` WHERE `proveedor`.`CIF_Prov` = '" + eliminarA + "'";
+                            String query = "DELETE FROM `almacentextil`.`producto` WHERE `producto`.`Id_producto` =" + eliminarA + "";
 
                             Statement s = miConexion.createStatement();
                             st.executeUpdate(query);
@@ -407,27 +338,25 @@ final class Producto extends JFrame {
 
                 boolean modificado = false;
 
-                String modificarA = (String) cmbox_CIF2.getSelectedItem();
+                int modificarA = (Integer) cmbox_ID2.getSelectedItem();
 
                 if (txt_Nombre.getText().equalsIgnoreCase("")) {
-                    JOptionPane.showMessageDialog(null, "Seleccione un Proveedor", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Seleccione un Producto", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    int Modificar = JOptionPane.showConfirmDialog(null, "Desea Modificar a: " + txt_Nombre.getText());
+                    int Modificar = JOptionPane.showConfirmDialog(null, "Desea Modificar: " + txt_Nombre.getText());
 
                     if (JOptionPane.OK_OPTION == Modificar) {
 
                         String Nombre = txt_Nombre.getText();
-                        String Direccion = txt_Direccion.getText();
-                        String Ciudad = txt_Ciudad.getText();
-                        String Pais = (String) cmbox_Pais2.getSelectedItem();
-                        int Telefono = Integer.parseInt(txt_Telefono.getText());
+                        String Descrip = txt_Descrip.getText();
+                        float PrecioU = Float.parseFloat(txt_PrecioU.getText());
 
                         Connection miConexion = (Connection) meConecto.ConectarMysql();
 
                         try (Statement st = miConexion.createStatement()) {
 
                             //Para ejecutar la consulta
-                            String query = "UPDATE `almacentextil`.`proveedor` SET `Nombre` = '" + Nombre + "', `Direccion` = '" + Direccion + "', `Ciudad` = '" + Ciudad + "', `Pais` = '" + Pais + "', `Telefono` = '" + Telefono + "' WHERE `proveedor`.`CIF_Prov` = '" + modificarA + "';";
+                            String query = "UPDATE `almacentextil`.`producto` SET `Nombre` = '" + Nombre + "', `Descrip` = '" + Descrip + "', `Precio_uni` = '" + PrecioU + "' WHERE `producto`.`Id_producto` = '" + modificarA + "';";
 
                             Statement s = miConexion.createStatement();
                             st.executeUpdate(query);
@@ -459,9 +388,9 @@ final class Producto extends JFrame {
         pestaña03 = new JPanel();
         pestaña03.setLayout(null);
 
-        cmbox_CIF = new JComboBox();
-        cmbox_CIF.setBounds(15, 5, 100, 20);
-        pestaña03.add(cmbox_CIF);
+        cmbox_ID = new JComboBox();
+        cmbox_ID.setBounds(15, 5, 100, 20);
+        pestaña03.add(cmbox_ID);
 
         JButton btn_Buscar = new JButton("Buscar");
         btn_Buscar.setBounds(334, 5, 90, 20);
@@ -478,7 +407,7 @@ final class Producto extends JFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
 
-                String buscarA = (String) cmbox_CIF.getSelectedItem();
+                int buscarA = (Integer) cmbox_ID.getSelectedItem();
 
                 Connection miConexion = (Connection) meConecto.ConectarMysql();
 
@@ -489,7 +418,7 @@ final class Producto extends JFrame {
                     tablaBD.setModel(modelo);
 
                     //Para ejecutar la consulta
-                    String query = "SELECT * FROM `proveedor` WHERE `CIF_Prov` LIKE '" + buscarA + "'";
+                    String query = "SELECT * FROM `producto` WHERE `Id_producto` = " + buscarA + "";
                     Statement s = miConexion.createStatement();
 
                     //Almacenamos en un ResultSet
@@ -525,11 +454,8 @@ final class Producto extends JFrame {
 
     public void llenarJtable() {
 
-        cmbox_CIF.removeAllItems();
-        cmbox_CIF2.removeAllItems();
-        cmbox_Pais1.removeAllItems();
-        cmbox_Pais2.removeAllItems();
-        PAISES.clear();
+        cmbox_ID.removeAllItems();
+        cmbox_ID2.removeAllItems();
 
         Connection miConexion = (Connection) meConecto.ConectarMysql();
 
@@ -540,7 +466,7 @@ final class Producto extends JFrame {
             tablaBD.setModel(modelo);
 
             //Nuestra sentencia SQL
-            String sentencia = "SELECT * FROM `proveedor`";
+            String sentencia = "SELECT * FROM `producto`";
             Statement s = miConexion.createStatement();
 
             //Almacenamos en un ResultSet
@@ -560,12 +486,9 @@ final class Producto extends JFrame {
             while (rs.next()) {
 
                 Object[] fila = new Object[cantidadColumnas];
-                cmbox_CIF.addItem(rs.getString("CIF_Prov"));
-                cmbox_CIF2.addItem(rs.getString("CIF_Prov"));
-
-                if (!PAISES.contains(rs.getString("Pais"))) {
-                    PAISES.add(rs.getString("Pais"));
-                }
+                cmbox_ID.addItem(rs.getInt("Id_producto"));
+                cmbox_ID2.addItem(rs.getInt("Id_producto"));
+                ultimoID = rs.getInt("Id_producto");
 
                 for (int i = 0; i < cantidadColumnas; i++) {
                     fila[i] = rs.getObject(i + 1);
@@ -578,11 +501,8 @@ final class Producto extends JFrame {
             System.err.println("Se ha producido un Error! ");
             System.err.println(e.getMessage());
         }
-
-        for (String Pais : PAISES) {
-            cmbox_Pais1.addItem(Pais);
-            cmbox_Pais2.addItem(Pais);
-        }
-
+        
+        ultimoID = ultimoID+1;
+        txt_ID.setText(Integer.toString(ultimoID));
     }
 }
