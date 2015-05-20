@@ -12,7 +12,7 @@ final class Cliente extends JFrame {
     private JPanel pestaña01, pestaña02, pestaña03;
     private JLabel lbl_CIF;
     private JTable tablaBD;
-    private JComboBox cmbox_CIF;
+    private JComboBox cmbox_CIF, cmbox_Pais1, cmbox_Pais2;
     private JScrollPane scroll;
 
     //Para poder conectarse a la base de datos
@@ -44,6 +44,8 @@ final class Cliente extends JFrame {
         setVisible(true);
     }
 
+    //--------------------------------------------------------------------------
+    //Primmera Pestaña
     public void crearPestaña01() {
         pestaña01 = new JPanel();
         pestaña01.setLayout(null);
@@ -52,73 +54,154 @@ final class Cliente extends JFrame {
         lbl_CIF.setBounds(10, 15, 50, 25);
         pestaña01.add(lbl_CIF);
 
-        JTextField id_alb1 = new JTextField();
-        id_alb1.setBounds(80, 15, 100, 25);
-        pestaña01.add(id_alb1);
+        JTextField txt_CIF = new JTextField();
+        txt_CIF.setBounds(80, 15, 100, 25);
+        txt_CIF.addKeyListener(new KeyAdapter() {    //Solo caracteres numericos y solo 9 digitos
+            @Override
+            public void keyTyped(KeyEvent e) {
+                int limitador = 9;
+                char caracter = e.getKeyChar();
+                if (txt_CIF.getText().length() >= limitador) {
+                    e.consume();
+                }
+            }
+        });
+        pestaña01.add(txt_CIF);
 
-        JLabel etq_ped1 = new JLabel("Nombre:");
-        etq_ped1.setBounds(10, 60, 150, 25);
-        pestaña01.add(etq_ped1);
+        JLabel lbl_Nombre = new JLabel("Nombre:");
+        lbl_Nombre.setBounds(10, 60, 150, 25);
+        pestaña01.add(lbl_Nombre);
 
-        JTextField id_ped1 = new JTextField();
-        id_ped1.setBounds(80, 60, 300, 25);
-        pestaña01.add(id_ped1);
+        JTextField txt_Nombre = new JTextField();
+        txt_Nombre.setBounds(80, 60, 300, 25);
+        pestaña01.add(txt_Nombre);
 
-        JLabel etq_env1 = new JLabel("Direccion:");
-        etq_env1.setBounds(10, 105, 100, 25);
-        pestaña01.add(etq_env1);
+        JLabel lbl_Dicreccion = new JLabel("Direccion:");
+        lbl_Dicreccion.setBounds(10, 105, 100, 25);
+        pestaña01.add(lbl_Dicreccion);
 
-        JTextField fech_env1 = new JTextField();
-        fech_env1.setBounds(80, 105, 300, 25);
-        pestaña01.add(fech_env1);
+        JTextField txt_Direccion = new JTextField();
+        txt_Direccion.setBounds(80, 105, 300, 25);
+        pestaña01.add(txt_Direccion);
 
-        JLabel etq_ciu1 = new JLabel("Ciudad:");
-        etq_ciu1.setBounds(10, 145, 80, 25);
-        pestaña01.add(etq_ciu1);
+        JLabel lbl_Ciudad = new JLabel("Ciudad:");
+        lbl_Ciudad.setBounds(10, 145, 80, 25);
+        pestaña01.add(lbl_Ciudad);
 
-        JTextField ciudad1 = new JTextField();
-        ciudad1.setBounds(80, 145, 100, 25);
-        pestaña01.add(ciudad1);
+        JTextField txt_Ciudad = new JTextField();
+        txt_Ciudad.setBounds(80, 145, 100, 25);
+        pestaña01.add(txt_Ciudad);
 
-        JLabel etq_pais1 = new JLabel("Pais:");
-        etq_pais1.setBounds(210, 145, 80, 25);
-        pestaña01.add(etq_pais1);
+        JLabel lbl_Pais = new JLabel("Pais:");
+        lbl_Pais.setBounds(210, 145, 80, 25);
+        pestaña01.add(lbl_Pais);
 
-        JComboBox pais1 = new JComboBox();
-        pais1.addItem("España");
-        pais1.addItem("E.E.U.U");
-        pais1.addItem("Inglaterra");
-        pais1.addItem("Japon");
-        pais1.addItem("Mexico");
-        pais1.addItem("China");
-        pais1.setBounds(270, 145, 100, 25);
-        pestaña01.add(pais1);
+        cmbox_Pais1 = new JComboBox();
+        cmbox_Pais1.setBounds(270, 145, 100, 25);
+        pestaña01.add(cmbox_Pais1);
 
-        JLabel etq_telf1 = new JLabel("Telefono:");
-        etq_telf1.setBounds(10, 185, 80, 25);
-        pestaña01.add(etq_telf1);
+        JLabel lbl_Telefono = new JLabel("Telefono: ");
+        lbl_Telefono.setBounds(10, 185, 80, 25);
+        pestaña01.add(lbl_Telefono);
 
-        JTextField telf1 = new JTextField();
-        telf1.setBounds(80, 185, 100, 25);
-        pestaña01.add(telf1);
+        JTextField txt_Telefono = new JTextField();
+        txt_Telefono.setBounds(80, 185, 100, 25);
+        txt_Telefono.addKeyListener(new KeyAdapter() {    //Solo caracteres numericos y solo 9 digitos
+            @Override
+            public void keyTyped(KeyEvent e) {
+                int limitador = 9;
+                char caracter = e.getKeyChar();
+                if (((caracter < '0') || (caracter > '9')) && (caracter != '\b') || txt_Telefono.getText().length() >= limitador) {
+                    e.consume();
+                }
+            }
+        });
+        pestaña01.add(txt_Telefono);
 
-        JLabel etq_deu1 = new JLabel("Deuda:");
-        etq_deu1.setBounds(210, 185, 80, 25);
-        pestaña01.add(etq_deu1);
+        JLabel lbl_Deuda = new JLabel("Deuda:");
+        lbl_Deuda.setBounds(210, 185, 80, 25);
+        pestaña01.add(lbl_Deuda);
 
-        JTextField deu1 = new JTextField();
-        deu1.setBounds(270, 185, 100, 25);
-        pestaña01.add(deu1);
+        JTextField txt_Deuda = new JTextField();
+        txt_Deuda.setBounds(270, 185, 100, 25);
+        txt_Deuda.addKeyListener(new KeyAdapter() {    //Solo caracteres numericos 
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char caracter = e.getKeyChar();
+                if (((caracter < '0') || (caracter > '9')) && (caracter != '\b') && (caracter != '.') && (caracter == ',')) {
+                    e.consume();
+                }
+            }
+        });
+        pestaña01.add(txt_Deuda);
 
-        JButton aceptar1 = new JButton("Aceptar");
-        aceptar1.setBounds(220, 290, 80, 25);
-        pestaña01.add(aceptar1);
+        JButton btn_Aceptar = new JButton("Aceptar");
+        btn_Aceptar.setBounds(220, 290, 80, 25);
+        pestaña01.add(btn_Aceptar);
 
-        JButton limpiar1 = new JButton("Limpiar");
-        limpiar1.setBounds(320, 290, 80, 25);
-        pestaña01.add(limpiar1);
+        JButton btn_Limpiar = new JButton("Limpiar");
+        btn_Limpiar.setBounds(320, 290, 80, 25);
+        pestaña01.add(btn_Limpiar);
+
+        btn_Limpiar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    txt_CIF.setText("");
+                    txt_Nombre.setText("");
+                    txt_Direccion.setText("");
+                    txt_Ciudad.setText("");
+                    cmbox_Pais1.setSelectedIndex(0);
+                    txt_Telefono.setText("");
+                    txt_Deuda.setText("");
+
+                } catch (Exception err) {
+                    System.out.println("Error: " + err);
+                }
+            }
+        });
+
+        btn_Aceptar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+
+                boolean insertado = false;
+                String CIF = txt_CIF.getText();
+                String Nombre = txt_Nombre.getText();
+                String Direccion = txt_Direccion.getText();
+                String Ciudad = txt_Ciudad.getText();
+                String Pais = (String) cmbox_Pais1.getSelectedItem();
+                int Telefono = Integer.parseInt(txt_Telefono.getText());
+                float Deuda = Float.parseFloat(txt_Deuda.getText());
+
+                Connection miConexion = (Connection) meConecto.ConectarMysql();
+
+                try (Statement st = miConexion.createStatement()) {
+
+                    //Para ejecutar la consulta
+                    String query = "INSERT INTO `almacentextil`.`cliente` (`CIF_Cli`, `Nombre`, `Direccion`, `Ciudad`, `Pais`, `Telefono`, `Deuda`) VALUES ('" + CIF + "', '" + Nombre + "', '" + Direccion + "', '" + Ciudad + "', '" + Pais + "', '" + Telefono + "', '" + Deuda + "')";
+
+                    Statement s = miConexion.createStatement();
+                    st.executeUpdate(query);
+                    insertado = true;
+
+                    miConexion.close();
+
+                    if (insertado == true) {
+                        JOptionPane.showMessageDialog(null, "Insertado Con Exito!", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Se ha producido un Error", "Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                    insertado = false;
+                }
+            }
+        });
     }
 
+    //--------------------------------------------------------------------------
+    //Segunda Pestaña
     public void crearPestaña02() {
         pestaña02 = new JPanel();
         pestaña02.setLayout(null);
@@ -159,15 +242,9 @@ final class Cliente extends JFrame {
         etq_pais2.setBounds(210, 145, 80, 25);
         pestaña02.add(etq_pais2);
 
-        JComboBox pais2 = new JComboBox();
-        pais2.addItem("España");
-        pais2.addItem("E.E.U.U");
-        pais2.addItem("Inglaterra");
-        pais2.addItem("Japon");
-        pais2.addItem("Mexico");
-        pais2.addItem("China");
-        pais2.setBounds(270, 145, 100, 25);
-        pestaña02.add(pais2);
+        cmbox_Pais2 = new JComboBox();
+        cmbox_Pais2.setBounds(270, 145, 100, 25);
+        pestaña02.add(cmbox_Pais2);
 
         JLabel etq_telf2 = new JLabel("Telefono:");
         etq_telf2.setBounds(10, 185, 80, 25);
@@ -300,6 +377,8 @@ final class Cliente extends JFrame {
             while (rs.next()) {
                 Object[] fila = new Object[cantidadColumnas];
                 cmbox_CIF.addItem(rs.getString("CIF_Cli"));
+                cmbox_Pais1.addItem(rs.getString("Pais"));
+                cmbox_Pais2.addItem(rs.getString("Pais"));
                 for (int i = 0; i < cantidadColumnas; i++) {
                     fila[i] = rs.getObject(i + 1);
                 }

@@ -81,18 +81,18 @@ public final class Albaran extends JFrame {
         lbl_Pedido.setBounds(10, 60, 80, 20);
         pestaña01.add(lbl_Pedido);
 
-        JTextField txtPedido = new JTextField();
-        txtPedido.setBounds(100, 60, 150, 20);
-        txtPedido.addKeyListener(new KeyAdapter() {
+        JTextField txt_Pedido = new JTextField();
+        txt_Pedido.setBounds(100, 60, 150, 20);
+        txt_Pedido.addKeyListener(new KeyAdapter() {    //Solo caracteres numericos
             @Override
-            public void keyTyped(KeyEvent e) {
+            public void keyTyped(KeyEvent e) { 
                 char caracter = e.getKeyChar();
                 if (((caracter < '0') || (caracter > '9')) && (caracter != '\b')) {
                     e.consume();
                 }
             }
         });
-        pestaña01.add(txtPedido);
+        pestaña01.add(txt_Pedido);
 
         lbl_Envio = new JLabel("Fecha Envio:");
         lbl_Envio.setBounds(10, 105, 80, 20);
@@ -141,7 +141,7 @@ public final class Albaran extends JFrame {
             public void actionPerformed(ActionEvent evt) {
                 try {
                     txt_ID.setText("");
-                    txtPedido.setText("");
+                    txt_Pedido.setText("");
                     cmboxDias.setSelectedIndex(0);
                     cmboxMeses.setSelectedIndex(0);
                     cmboxYear.setSelectedIndex(0);
@@ -172,11 +172,11 @@ public final class Albaran extends JFrame {
                         idAlbaran = Integer.parseInt(txt_ID.getText());
                     }
 
-                    if (txtPedido.getText().equalsIgnoreCase("")) {
+                    if (txt_Pedido.getText().equalsIgnoreCase("")) {
                         JOptionPane.showMessageDialog(null, "ID Factura Incorrecto", "Alerta", JOptionPane.INFORMATION_MESSAGE, null);
                         fallos++;
                     } else {
-                        idFactura = Integer.parseInt(txtPedido.getText());
+                        idFactura = Integer.parseInt(txt_Pedido.getText());
                     }
 
                     diaE = (String) cmboxDias.getSelectedItem();
