@@ -128,7 +128,8 @@ public final class FacturaC extends JFrame {
                     
         
                     nFactura = txt_idFac.getText();
-                    //imprimir(txt_idPed.getText(), .getText(), txt_totSin.getText(), txt_desc.getText(), tot_con1.getText());
+                    String fecha = ""+(String)cmboxDias.getSelectedItem()+"/"+(String)cmboxMeses.getSelectedItem()+"/"+(String)cmboxYear.getSelectedItem();
+                    imprimir((String)cmb_idPed.getSelectedItem(),fecha, txt_totSin.getText(), txt_desc.getText(), txt_totCon.getText());
                    
                 } catch (Exception err) {
                     System.out.println(err);
