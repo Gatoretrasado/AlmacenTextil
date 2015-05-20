@@ -270,118 +270,176 @@ final class PedidoC extends JFrame {
         btn_Eliminar.setForeground(Color.white);
         pestaña02.add(btn_Eliminar);
 
-        btn_Limpiar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                try {
-                    txt_total.setText("");
-                    txt_precio.setText("");
-                    cmb_IDProd.setSelectedIndex(0);
-                    cmb_IDPedido.setSelectedIndex(0);
-                    spn_cantidad.setValue(0);
-
-                } catch (Exception err) {
-                    System.out.println("Error: " + err);
-                }
-            }
-        });
-
-        btn_Suma.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                try {
-
-                    if (txt_precio.getText().equalsIgnoreCase("")) {
-                        JOptionPane.showMessageDialog(null, "Seleccione Producto", "Aviso", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        float cantidad = (float) ((Integer) spn_cantidad.getValue());
-                        float precio = Float.parseFloat(txt_precio.getText());
-                        float result = precio * cantidad;
-                        txt_total.setText(Integer.toString((int) result));
-                    }
-                } catch (Exception e) {
-                    System.out.println("Error 275: " + e);
-                }
-
-            }
-        });
-
-        btn_Buscar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                int buscarA = (Integer) cmb_IDProd.getSelectedItem();
-
-                Connection miConexion = (Connection) meConecto.ConectarMysql();
-
-                try (Statement st = miConexion.createStatement()) {
-
-                    //Para ejecutar la consulta
-                    String query = "SELECT * FROM `producto` WHERE `Id_producto` = " + buscarA + "";
-                    Statement s = miConexion.createStatement();
-
-                    //Almacenamos en un ResultSet
-                    ResultSet rs = s.executeQuery(query);
-
-                    //Obteniendo la informacion de las columnas que estan siendo consultadas
-                    ResultSetMetaData rsMd = rs.getMetaData();
-
-                    //Creando las filas para el JTable
-                    while (rs.next()) {
-
-                        txt_precio.setText(rs.getString("Precio_uni"));
-                    }
-                    rs.close();
-                    miConexion.close();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
-
-        btn_Aceptar.addActionListener(new ActionListener() {
+        btn_Eliminar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
 
-                if (txt_total.getText().equalsIgnoreCase("")) {
-                    JOptionPane.showMessageDialog(null, "Realice la sum", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                boolean eliminado = false;
+
+                int eliminarA1 = (Integer) cmb_IDPedido.getSelectedItem();
+                int eliminarA2 = (Integer) cmb_IDProd.getSelectedItem();
+
+                if (txt_precio.getText().equalsIgnoreCase("")) {
+                    JOptionPane.showMessageDialog(null, "Seleccione un Producto", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                 } else {
+                    int Borrar = JOptionPane.showConfirmDialog(null, "Eliminar: " + eliminarA1 + " - " + eliminarA2);
 
-                    int IDPedido = (Integer) cmb_IDPedido.getSelectedItem();
-                    int IDProducto = (Integer) cmb_IDProd.getSelectedItem();
-                    String Precio = txt_precio.getText();
-                    int Cantidad = (Integer) spn_cantidad.getValue();
-                    int Total = Integer.parseInt(txt_total.getText());
-                    String NULL = null;
+                    if (JOptionPane.OK_OPTION == Borrar) {
+                        Connection miConexion = (Connection) meConecto.ConectarMysql();
 
-                    Connection miConexion = (Connection) meConecto.ConectarMysql();
-                    boolean insertado = false;
+                        try (Statement st = miConexion.createStatement()) {
 
-                    try (Statement st = miConexion.createStatement()) {
+                            //Para ejecutar la consulta
+                            String query = "DELETE FROM `linea_pedido_cli` WHERE `Id_pedido` = " + eliminarA1 + " and `Id_producto` = " + eliminarA2 + "";
 
-                        //Para ejecutar la consulta
-                        String query = "INSERT INTO `almacentextil`.`linea_pedido_cli` (`Id_pedido`, `Id_producto`, `Id_linea`, `Precio`, `Cantidad`, `Total`) VALUES ('" + IDPedido + "', '" + IDProducto + "', " + NULL + ", '" + Precio + "', '" + Cantidad + "', '" + Total + "')";
-                        Statement s = miConexion.createStatement();
-                        st.executeUpdate(query);
-                        insertado = true;
+                            Statement s = miConexion.createStatement();
+                            st.executeUpdate(query);
+                            eliminado = true;
 
-                        miConexion.close();
+                            miConexion.close();
 
-                        if (insertado == true) {
-                            JOptionPane.showMessageDialog(null, "Insertado Con Exito!", "Guardado", JOptionPane.INFORMATION_MESSAGE);
-                            ejecutarClientes();
-                            ejecutarPedido_CLi();
-                            ejecutarProductos();
+                            if (eliminado == true) {
+                                JOptionPane.showMessageDialog(null, "Eliminado Con Exito!", "Eliminado", JOptionPane.INFORMATION_MESSAGE);
+
+                            }
+
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(null, "Se ha producido un Error", "Error", JOptionPane.ERROR_MESSAGE);
+                            ex.printStackTrace();
+                            eliminado = false;
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Eliminacion Cancelada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        }
+        );
+
+        btn_Limpiar.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt
+                    ) {
+                        try {
+                            txt_total.setText("");
+                            txt_precio.setText("");
+                            cmb_IDProd.setSelectedIndex(0);
+                            cmb_IDPedido.setSelectedIndex(0);
+                            spn_cantidad.setValue(0);
+
+                        } catch (Exception err) {
+                            System.out.println("Error: " + err);
+                        }
+                    }
+                }
+        );
+
+        btn_Suma.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt
+                    ) {
+                        try {
+
+                            if (txt_precio.getText().equalsIgnoreCase("")) {
+                                JOptionPane.showMessageDialog(null, "Seleccione Producto", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                            } else {
+                                float cantidad = (float) ((Integer) spn_cantidad.getValue());
+                                float precio = Float.parseFloat(txt_precio.getText());
+                                float result = precio * cantidad;
+                                txt_total.setText(Integer.toString((int) result));
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Error 275: " + e);
                         }
 
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(null, "Se ha producido un Error", "Error", JOptionPane.ERROR_MESSAGE);
-                        ex.printStackTrace();
-                        insertado = false;
                     }
-
                 }
-            }
-        });
+        );
+
+        btn_Buscar.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt
+                    ) {
+                        int buscarA = (Integer) cmb_IDProd.getSelectedItem();
+
+                        Connection miConexion = (Connection) meConecto.ConectarMysql();
+
+                        try (Statement st = miConexion.createStatement()) {
+
+                            //Para ejecutar la consulta
+                            String query = "SELECT * FROM `producto` WHERE `Id_producto` = " + buscarA + "";
+                            Statement s = miConexion.createStatement();
+
+                            //Almacenamos en un ResultSet
+                            ResultSet rs = s.executeQuery(query);
+
+                            //Obteniendo la informacion de las columnas que estan siendo consultadas
+                            ResultSetMetaData rsMd = rs.getMetaData();
+
+                            //Creando las filas para el JTable
+                            while (rs.next()) {
+
+                                txt_precio.setText(rs.getString("Precio_uni"));
+                            }
+                            rs.close();
+                            miConexion.close();
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+        );
+
+        btn_Aceptar.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent evt
+                    ) {
+
+                        if (txt_total.getText().equalsIgnoreCase("")) {
+                            JOptionPane.showMessageDialog(null, "Realice la sum", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+
+                            int IDPedido = (Integer) cmb_IDPedido.getSelectedItem();
+                            int IDProducto = (Integer) cmb_IDProd.getSelectedItem();
+                            String Precio = txt_precio.getText();
+                            int Cantidad = (Integer) spn_cantidad.getValue();
+                            int Total = Integer.parseInt(txt_total.getText());
+                            String NULL = null;
+
+                            Connection miConexion = (Connection) meConecto.ConectarMysql();
+                            boolean insertado = false;
+
+                            try (Statement st = miConexion.createStatement()) {
+
+                                //Para ejecutar la consulta
+                                String query = "INSERT INTO `almacentextil`.`linea_pedido_cli` (`Id_pedido`, `Id_producto`, `Id_linea`, `Precio`, `Cantidad`, `Total`) VALUES ('" + IDPedido + "', '" + IDProducto + "', " + NULL + ", '" + Precio + "', '" + Cantidad + "', '" + Total + "')";
+                                Statement s = miConexion.createStatement();
+                                st.executeUpdate(query);
+                                insertado = true;
+
+                                miConexion.close();
+
+                                if (insertado == true) {
+                                    JOptionPane.showMessageDialog(null, "Insertado Con Exito!", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+                                    ejecutarClientes();
+                                    ejecutarPedido_CLi();
+                                    ejecutarProductos();
+                                }
+
+                            } catch (Exception ex) {
+                                JOptionPane.showMessageDialog(null, "Se ha producido un Error", "Error", JOptionPane.ERROR_MESSAGE);
+                                ex.printStackTrace();
+                                insertado = false;
+                            }
+
+                        }
+                    }
+                }
+        );
     }
 
     public void crearPestaña03() {
