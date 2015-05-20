@@ -74,6 +74,15 @@ final class Cliente extends JFrame {
 
         JTextField txt_Nombre = new JTextField();
         txt_Nombre.setBounds(80, 60, 300, 25);
+        txt_Nombre.addKeyListener(new KeyAdapter() {    //Solo caracteres Alfabeticos
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char ch = e.getKeyChar();
+                if (Character.isDigit(ch)) {
+                    e.consume();
+                }
+            }
+        });
         pestaña01.add(txt_Nombre);
 
         JLabel lbl_Dicreccion = new JLabel("Direccion:");
@@ -90,6 +99,15 @@ final class Cliente extends JFrame {
 
         JTextField txt_Ciudad = new JTextField();
         txt_Ciudad.setBounds(80, 145, 100, 25);
+        txt_Ciudad.addKeyListener(new KeyAdapter() {    //Solo caracteres Alfabeticos
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char ch = e.getKeyChar();
+                if (Character.isDigit(ch)) {
+                    e.consume();
+                }
+            }
+        });
         pestaña01.add(txt_Ciudad);
 
         JLabel lbl_Pais = new JLabel("Pais:");
