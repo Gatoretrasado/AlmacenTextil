@@ -24,6 +24,7 @@ final class Cliente extends JFrame {
         setBackground(Color.gray);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        setResizable(false);
 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
@@ -267,7 +268,7 @@ final class Cliente extends JFrame {
         lbl_Telefono.setBounds(10, 185, 80, 25);
         pestaña02.add(lbl_Telefono);
 
-        JTextField txt_Telefono =  new JTextField();
+        JTextField txt_Telefono = new JTextField();
         txt_Telefono.setBounds(80, 185, 100, 25);
         pestaña02.add(txt_Telefono);
 
@@ -288,7 +289,7 @@ final class Cliente extends JFrame {
         JButton btn_Aceptar = new JButton("Aceptar");
         btn_Aceptar.setBounds(220, 290, 80, 25);
         pestaña02.add(btn_Aceptar);
-        
+
         JButton btn_Buscar = new JButton("Buscar");
         btn_Buscar.setBounds(250, 15, 100, 25);
         pestaña02.add(btn_Buscar);
@@ -296,7 +297,7 @@ final class Cliente extends JFrame {
         JButton btn_Limpiar = new JButton("Limpiar");
         btn_Limpiar.setBounds(320, 290, 80, 25);
         pestaña02.add(btn_Limpiar);
-        
+
         btn_Limpiar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -311,6 +312,45 @@ final class Cliente extends JFrame {
 
                 } catch (Exception err) {
                     System.out.println("Error: " + err);
+                }
+            }
+        });
+
+        btn_Buscar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+
+                String modificarA = (String) cmbox_CIF2.getSelectedItem();
+
+                Connection miConexion = (Connection) meConecto.ConectarMysql();
+
+                try (Statement st = miConexion.createStatement()) {
+
+                    //Para ejecutar la consulta
+                    String query = "SELECT * FROM `cliente` WHERE `CIF_Cli` LIKE '" + modificarA + "'";
+                    Statement s = miConexion.createStatement();
+
+                    //Almacenamos en un ResultSet
+                    ResultSet rs = s.executeQuery(query);
+
+                    //Obteniendo la informacion de las columnas que estan siendo consultadas
+                    ResultSetMetaData rsMd = rs.getMetaData();
+
+                    //Creando las filas para el JTable
+                    while (rs.next()) {
+                        
+                        txt_Nombre.setText(rs.getString("Nombre"));
+                        txt_Direccion.setText(rs.getString("Direccion"));
+                        txt_Ciudad.setText(rs.getString("Ciudad"));
+                        cmbox_Pais2.setSelectedItem(rs.getString("Pais"));
+                        txt_Telefono.setText(rs.getString("Telefono"));
+                        txt_Deuda.setText(rs.getString("Deuda"));
+                        
+                    }
+                    rs.close();
+                    miConexion.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             }
         });
@@ -340,6 +380,7 @@ final class Cliente extends JFrame {
         btn_Buscar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
+
                 String buscarA = (String) cmbox_CIF.getSelectedItem();
 
                 Connection miConexion = (Connection) meConecto.ConectarMysql();
