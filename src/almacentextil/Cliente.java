@@ -153,9 +153,9 @@ final class Cliente extends JFrame {
         });
         pestaña01.add(txt_Deuda);
 
-        JButton btn_Aceptar = new JButton("Aceptar");
-        btn_Aceptar.setBounds(220, 290, 80, 25);
-        pestaña01.add(btn_Aceptar);
+        JButton btn_Insertar = new JButton("Insertar");
+        btn_Insertar.setBounds(220, 290, 80, 25);
+        pestaña01.add(btn_Insertar);
 
         JButton btn_Limpiar = new JButton("Limpiar");
         btn_Limpiar.setBounds(320, 290, 80, 25);
@@ -179,7 +179,7 @@ final class Cliente extends JFrame {
             }
         });
 
-        btn_Aceptar.addActionListener(new ActionListener() {
+        btn_Insertar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
 
@@ -239,6 +239,15 @@ final class Cliente extends JFrame {
 
         JTextField txt_Nombre = new JTextField();
         txt_Nombre.setBounds(80, 60, 300, 25);
+        txt_Nombre.addKeyListener(new KeyAdapter() {    //Solo caracteres Alfabeticos
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char ch = e.getKeyChar();
+                if (Character.isDigit(ch)) {
+                    e.consume();
+                }
+            }
+        });
         pestaña02.add(txt_Nombre);
 
         JLabel lbl_Direccion = new JLabel("Direccion:");
@@ -255,6 +264,15 @@ final class Cliente extends JFrame {
 
         JTextField txt_Ciudad = new JTextField();
         txt_Ciudad.setBounds(80, 145, 100, 25);
+        txt_Ciudad.addKeyListener(new KeyAdapter() {    //Solo caracteres Alfabeticos
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char ch = e.getKeyChar();
+                if (Character.isDigit(ch)) {
+                    e.consume();
+                }
+            }
+        });
         pestaña02.add(txt_Ciudad);
 
         JLabel lbl_Pais = new JLabel("Pais:");
@@ -271,6 +289,16 @@ final class Cliente extends JFrame {
 
         JTextField txt_Telefono = new JTextField();
         txt_Telefono.setBounds(80, 185, 100, 25);
+        txt_Telefono.addKeyListener(new KeyAdapter() {    //Solo caracteres numericos y solo 9 digitos
+            @Override
+            public void keyTyped(KeyEvent e) {
+                int limitador = 9;
+                char caracter = e.getKeyChar();
+                if (((caracter < '0') || (caracter > '9')) && (caracter != '\b') || txt_Telefono.getText().length() >= limitador) {
+                    e.consume();
+                }
+            }
+        });
         pestaña02.add(txt_Telefono);
 
         JLabel lbl_Deuda = new JLabel("Deuda:");
@@ -279,6 +307,15 @@ final class Cliente extends JFrame {
 
         JTextField txt_Deuda = new JTextField();
         txt_Deuda.setBounds(270, 185, 100, 25);
+        txt_Deuda.addKeyListener(new KeyAdapter() {    //Solo caracteres numericos 
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char caracter = e.getKeyChar();
+                if (((caracter < '0') || (caracter > '9')) && (caracter != '\b') && (caracter != '.') && (caracter == ',')) {
+                    e.consume();
+                }
+            }
+        });
         pestaña02.add(txt_Deuda);
 
         JButton btn_Eliminar = new JButton("Eliminar");
@@ -287,9 +324,9 @@ final class Cliente extends JFrame {
         btn_Eliminar.setForeground(Color.white);
         pestaña02.add(btn_Eliminar);
 
-        JButton btn_Aceptar = new JButton("Aceptar");
-        btn_Aceptar.setBounds(220, 290, 80, 25);
-        pestaña02.add(btn_Aceptar);
+        JButton btn_Modificar = new JButton("Modificar");
+        btn_Modificar.setBounds(220, 290, 80, 25);
+        pestaña02.add(btn_Modificar);
 
         JButton btn_Buscar = new JButton("Buscar");
         btn_Buscar.setBounds(250, 15, 100, 25);
@@ -321,14 +358,14 @@ final class Cliente extends JFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
 
-                String modificarA = (String) cmbox_CIF2.getSelectedItem();
+                String buscarA = (String) cmbox_CIF2.getSelectedItem();
 
                 Connection miConexion = (Connection) meConecto.ConectarMysql();
 
                 try (Statement st = miConexion.createStatement()) {
 
                     //Para ejecutar la consulta
-                    String query = "SELECT * FROM `cliente` WHERE `CIF_Cli` LIKE '" + modificarA + "'";
+                    String query = "SELECT * FROM `cliente` WHERE `CIF_Cli` LIKE '" + buscarA + "'";
                     Statement s = miConexion.createStatement();
 
                     //Almacenamos en un ResultSet
@@ -393,12 +430,64 @@ final class Cliente extends JFrame {
                             eliminado = false;
                         }
                     } else {
-                        JOptionPane.showMessageDialog(null, "Eliminacion Cancelada", "Avsio", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Eliminacion Cancelada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
             }
         }
         );
+
+        btn_Modificar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+
+                boolean modificado = false;
+
+                String modificarA = (String) cmbox_CIF2.getSelectedItem();
+
+                if (txt_Nombre.getText().equalsIgnoreCase("")) {
+                    JOptionPane.showMessageDialog(null, "Seleccione un Cliente", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    int Modificar = JOptionPane.showConfirmDialog(null, "Desea Modificar a: " + txt_Nombre.getText());
+
+                    if (JOptionPane.OK_OPTION == Modificar) {
+
+                        String Nombre = txt_Nombre.getText();
+                        String Direccion = txt_Direccion.getText();
+                        String Ciudad = txt_Ciudad.getText();
+                        String Pais = (String) cmbox_Pais2.getSelectedItem();
+                        int Telefono = Integer.parseInt(txt_Telefono.getText());
+                        float Deuda = Float.parseFloat(txt_Deuda.getText());
+
+                        Connection miConexion = (Connection) meConecto.ConectarMysql();
+
+                        try (Statement st = miConexion.createStatement()) {
+
+                            //Para ejecutar la consulta
+                            String query = "UPDATE `almacentextil`.`cliente` SET `Nombre` = '" + Nombre + "', `Direccion` = '" + Direccion + "', `Ciudad` = '" + Ciudad + "', `Pais` = '" + Pais + "', `Telefono` = '" + Telefono + "', `Deuda` = '" + Deuda + "' WHERE `cliente`.`CIF_Cli` = '" + modificarA + "';";
+
+                            Statement s = miConexion.createStatement();
+                            st.executeUpdate(query);
+                            modificado = true;
+
+                            miConexion.close();
+
+                            if (modificado == true) {
+                                JOptionPane.showMessageDialog(null, "Modificado Con Exito!", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+                                llenarJtable();
+                            }
+
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(null, "Se ha producido un Error", "Error", JOptionPane.ERROR_MESSAGE);
+                            ex.printStackTrace();
+                            modificado = false;
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Modificacion Cancelada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        });
     }
 
     //--------------------------------------------------------------------------
