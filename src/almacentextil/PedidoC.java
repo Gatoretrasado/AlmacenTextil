@@ -15,7 +15,7 @@ final class PedidoC extends JFrame {
     final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
     private int ultimoID_Pedido;
     private JTextField txt_IDPedido;
-    private JComboBox cmb_IDCliente;
+    private JComboBox cmb_IDCliente, cmb_IDPedido, cmb_IDProd;
     private JScrollPane scroll;
     private JTable tablaBD;
 
@@ -50,6 +50,7 @@ final class PedidoC extends JFrame {
 
         ejecutarPedido_CLi();
         ejecutarClientes();
+        ejecutarProductos();
 
         setVisible(true);
     }
@@ -185,6 +186,7 @@ final class PedidoC extends JFrame {
                             JOptionPane.showMessageDialog(null, "Insertado Con Exito!", "Guardado", JOptionPane.INFORMATION_MESSAGE);
                             ejecutarClientes();
                             ejecutarPedido_CLi();
+                            ejecutarProductos();
                         }
 
                     } catch (Exception ex) {
@@ -203,21 +205,21 @@ final class PedidoC extends JFrame {
         pestaña02 = new JPanel();
         pestaña02.setLayout(null);
 
-        JLabel lbl_idP = new JLabel("Id Pedido:");
-        lbl_idP.setBounds(30, 25, 68, 22);
-        pestaña02.add(lbl_idP);
+        JLabel lbl_IDPedido = new JLabel("Id Pedido:");
+        lbl_IDPedido.setBounds(30, 25, 68, 22);
+        pestaña02.add(lbl_IDPedido);
 
-        JComboBox cmb_idP = new JComboBox();
-        cmb_idP.setBounds(90, 25, 90, 20);
-        pestaña02.add(cmb_idP);
+        cmb_IDPedido = new JComboBox();
+        cmb_IDPedido.setBounds(90, 25, 90, 20);
+        pestaña02.add(cmb_IDPedido);
 
-        JLabel lbl_idProd = new JLabel("Id Producto:");
-        lbl_idProd.setBounds(200, 25, 90, 20);
-        pestaña02.add(lbl_idProd);
+        JLabel lbl_IDProd = new JLabel("Id Producto:");
+        lbl_IDProd.setBounds(200, 25, 90, 20);
+        pestaña02.add(lbl_IDProd);
 
-        JComboBox cmb_idProd = new JComboBox();
-        cmb_idProd.setBounds(290, 25, 90, 20);
-        pestaña02.add(cmb_idProd);
+        cmb_IDProd = new JComboBox();
+        cmb_IDProd.setBounds(280, 25, 70, 20);
+        pestaña02.add(cmb_IDProd);
 
         JLabel lbl_precio = new JLabel("Precio:");
         lbl_precio.setBounds(30, 60, 90, 20);
@@ -237,7 +239,7 @@ final class PedidoC extends JFrame {
         spn_cantidad.setBounds(210, 60, 50, 20);
         pestaña02.add(spn_cantidad);
 
-        JLabel lbl_total = new JLabel("Total:");
+        JLabel lbl_total = new JLabel("Total: ");
         lbl_total.setBounds(270, 60, 90, 20);
         pestaña02.add(lbl_total);
 
@@ -246,12 +248,140 @@ final class PedidoC extends JFrame {
         txt_total.setEditable(false);
         pestaña02.add(txt_total);
 
-        JButton btn_acept = new JButton("Aceptar");
-        btn_acept.setBounds(200, 300, 90, 27);
-        pestaña02.add(btn_acept);
-        JButton btn_limp = new JButton("Limpiar");
-        btn_limp.setBounds(300, 300, 90, 27);
-        pestaña02.add(btn_limp);
+        JButton btn_Suma = new JButton("Sum");
+        btn_Suma.setBounds(370, 60, 60, 20);
+        pestaña02.add(btn_Suma);
+
+        JButton btn_Aceptar = new JButton("Aceptar");
+        btn_Aceptar.setBounds(200, 300, 90, 27);
+        pestaña02.add(btn_Aceptar);
+
+        JButton btn_Buscar = new JButton("Buscar");
+        btn_Buscar.setBounds(360, 25, 75, 20);
+        pestaña02.add(btn_Buscar);
+
+        JButton btn_Limpiar = new JButton("Limpiar");
+        btn_Limpiar.setBounds(300, 300, 90, 27);
+        pestaña02.add(btn_Limpiar);
+
+        JButton btn_Eliminar = new JButton("Eliminar");
+        btn_Eliminar.setBounds(30, 300, 90, 27);
+        btn_Eliminar.setBackground(Color.red);
+        btn_Eliminar.setForeground(Color.white);
+        pestaña02.add(btn_Eliminar);
+
+        btn_Limpiar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    txt_total.setText("");
+                    txt_precio.setText("");
+                    cmb_IDProd.setSelectedIndex(0);
+                    cmb_IDPedido.setSelectedIndex(0);
+                    spn_cantidad.setValue(0);
+
+                } catch (Exception err) {
+                    System.out.println("Error: " + err);
+                }
+            }
+        });
+
+        btn_Suma.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                try {
+
+                    if (txt_precio.getText().equalsIgnoreCase("")) {
+                        JOptionPane.showMessageDialog(null, "Seleccione Producto", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        float cantidad = (float) ((Integer) spn_cantidad.getValue());
+                        float precio = Float.parseFloat(txt_precio.getText());
+                        float result = precio * cantidad;
+                        txt_total.setText(Integer.toString((int) result));
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error 275: " + e);
+                }
+
+            }
+        });
+
+        btn_Buscar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                int buscarA = (Integer) cmb_IDProd.getSelectedItem();
+
+                Connection miConexion = (Connection) meConecto.ConectarMysql();
+
+                try (Statement st = miConexion.createStatement()) {
+
+                    //Para ejecutar la consulta
+                    String query = "SELECT * FROM `producto` WHERE `Id_producto` = " + buscarA + "";
+                    Statement s = miConexion.createStatement();
+
+                    //Almacenamos en un ResultSet
+                    ResultSet rs = s.executeQuery(query);
+
+                    //Obteniendo la informacion de las columnas que estan siendo consultadas
+                    ResultSetMetaData rsMd = rs.getMetaData();
+
+                    //Creando las filas para el JTable
+                    while (rs.next()) {
+
+                        txt_precio.setText(rs.getString("Precio_uni"));
+                    }
+                    rs.close();
+                    miConexion.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        btn_Aceptar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+
+                if (txt_total.getText().equalsIgnoreCase("")) {
+                    JOptionPane.showMessageDialog(null, "Realice la sum", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+
+                    int IDPedido = (Integer) cmb_IDPedido.getSelectedItem();
+                    int IDProducto = (Integer) cmb_IDProd.getSelectedItem();
+                    String Precio = txt_precio.getText();
+                    int Cantidad = (Integer) spn_cantidad.getValue();
+                    int Total = Integer.parseInt(txt_total.getText());
+                    String NULL = null;
+
+                    Connection miConexion = (Connection) meConecto.ConectarMysql();
+                    boolean insertado = false;
+
+                    try (Statement st = miConexion.createStatement()) {
+
+                        //Para ejecutar la consulta
+                        String query = "INSERT INTO `almacentextil`.`linea_pedido_cli` (`Id_pedido`, `Id_producto`, `Id_linea`, `Precio`, `Cantidad`, `Total`) VALUES ('" + IDPedido + "', '" + IDProducto + "', " + NULL + ", '" + Precio + "', '" + Cantidad + "', '" + Total + "')";
+                        Statement s = miConexion.createStatement();
+                        st.executeUpdate(query);
+                        insertado = true;
+
+                        miConexion.close();
+
+                        if (insertado == true) {
+                            JOptionPane.showMessageDialog(null, "Insertado Con Exito!", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+                            ejecutarClientes();
+                            ejecutarPedido_CLi();
+                            ejecutarProductos();
+                        }
+
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, "Se ha producido un Error", "Error", JOptionPane.ERROR_MESSAGE);
+                        ex.printStackTrace();
+                        insertado = false;
+                    }
+
+                }
+            }
+        });
     }
 
     public void crearPestaña03() {
@@ -367,6 +497,8 @@ final class PedidoC extends JFrame {
 
     public void ejecutarPedido_CLi() {
 
+        cmb_IDPedido.removeAllItems();
+
         Connection miConexion = (Connection) meConecto.ConectarMysql();
 
         try (Statement st = miConexion.createStatement()) {
@@ -396,6 +528,7 @@ final class PedidoC extends JFrame {
             while (rs.next()) {
                 Object[] fila = new Object[cantidadColumnas];
                 ultimoID_Pedido = rs.getInt("Id_pedido");
+                cmb_IDPedido.addItem(rs.getInt("Id_pedido"));
 
                 for (int i = 0; i < cantidadColumnas; i++) {
                     fila[i] = rs.getObject(i + 1);
@@ -430,6 +563,33 @@ final class PedidoC extends JFrame {
             //Creando las filas para el JTable
             while (rs.next()) {
                 cmb_IDCliente.addItem(rs.getString("CIF_Cli"));
+            }
+            rs.close();
+            miConexion.close();
+        } catch (SQLException e) {
+            System.err.println("Se ha producido un Error! ");
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public void ejecutarProductos() {
+
+        cmb_IDProd.removeAllItems();
+
+        Connection miConexion = (Connection) meConecto.ConectarMysql();
+
+        try (Statement st = miConexion.createStatement()) {
+
+            //Nuestra sentencia SQL
+            String sentencia = "SELECT * FROM `producto`";
+            Statement s = miConexion.createStatement();
+
+            //Almacenamos en un ResultSet
+            ResultSet rs = s.executeQuery(sentencia);
+
+            //Creando las filas para el JTable
+            while (rs.next()) {
+                cmb_IDProd.addItem(rs.getInt("Id_producto"));
             }
             rs.close();
             miConexion.close();
