@@ -25,12 +25,17 @@ public final class menuPrincipal extends JFrame {
 
         this.setTitle(" -- Empresa Textil -- ");
         this.setSize(450, 400);
-        this.setBackground(Color.gray);
+        this.setBackground(Color.ORANGE);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
         this.setVisible(true);
 
+        //Color JFrame
+        this.getContentPane().setBackground(Color.orange);
+
+        //Color JPanel
+        
         btn_fact = new javax.swing.JButton();
         btn_alb = new javax.swing.JButton();
         btn_ped = new javax.swing.JButton();
