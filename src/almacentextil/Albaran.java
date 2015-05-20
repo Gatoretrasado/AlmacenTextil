@@ -303,6 +303,7 @@ public final class Albaran extends JFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 int buscarA = (Integer) cmbox_ID.getSelectedItem();
+                
                 Connection miConexion = (Connection) meConecto.ConectarMysql();
 
                 try (Statement st = miConexion.createStatement()) {
