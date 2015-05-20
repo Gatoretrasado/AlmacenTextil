@@ -207,6 +207,7 @@ final class Cliente extends JFrame {
 
                     if (insertado == true) {
                         JOptionPane.showMessageDialog(null, "Insertado Con Exito!", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+                        llenarJtable();
                     }
 
                 } catch (Exception ex) {
@@ -338,14 +339,14 @@ final class Cliente extends JFrame {
 
                     //Creando las filas para el JTable
                     while (rs.next()) {
-                        
+
                         txt_Nombre.setText(rs.getString("Nombre"));
                         txt_Direccion.setText(rs.getString("Direccion"));
                         txt_Ciudad.setText(rs.getString("Ciudad"));
                         cmbox_Pais2.setSelectedItem(rs.getString("Pais"));
                         txt_Telefono.setText(rs.getString("Telefono"));
                         txt_Deuda.setText(rs.getString("Deuda"));
-                        
+
                     }
                     rs.close();
                     miConexion.close();
@@ -354,6 +355,50 @@ final class Cliente extends JFrame {
                 }
             }
         });
+
+        btn_Eliminar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+
+                boolean eliminado = false;
+                String eliminarA = (String) cmbox_CIF2.getSelectedItem();
+
+                if (txt_Nombre.getText().equalsIgnoreCase("")) {
+                    JOptionPane.showMessageDialog(null, "Seleccione un Cliente", "Avsio", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    int Borrar = JOptionPane.showConfirmDialog(null, "Desea Eliminar a: " + txt_Nombre.getText());
+
+                    if (JOptionPane.OK_OPTION == Borrar) {
+                        Connection miConexion = (Connection) meConecto.ConectarMysql();
+
+                        try (Statement st = miConexion.createStatement()) {
+
+                            //Para ejecutar la consulta
+                            String query = "DELETE FROM `almacentextil`.`cliente` WHERE `cliente`.`CIF_Cli` = '" + eliminarA + "'";
+
+                            Statement s = miConexion.createStatement();
+                            st.executeUpdate(query);
+                            eliminado = true;
+
+                            miConexion.close();
+
+                            if (eliminado == true) {
+                                JOptionPane.showMessageDialog(null, "Eliminado Con Exito!", "Eliminado", JOptionPane.INFORMATION_MESSAGE);
+                                llenarJtable();
+                            }
+
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(null, "Se ha producido un Error", "Error", JOptionPane.ERROR_MESSAGE);
+                            ex.printStackTrace();
+                            eliminado = false;
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Eliminacion Cancelada", "Avsio", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        }
+        );
     }
 
     //--------------------------------------------------------------------------
@@ -427,6 +472,9 @@ final class Cliente extends JFrame {
     }
 
     public void llenarJtable() {
+
+        cmbox_CIF.removeAllItems();
+        cmbox_CIF2.removeAllItems();
 
         Connection miConexion = (Connection) meConecto.ConectarMysql();
 
