@@ -18,8 +18,8 @@ final class PedidoP extends JFrame {
     private int ultimoID_Pedido;
     private JTextField txt_IDPedido, txt_FechaPedido, txt_FechaEnvio;
     private JComboBox cmb_IDCliente, cmb_IDPedido, cmb_IDProd, cmb_IDProv, cmb_IDPedido2;
-    private JScrollPane scroll, scroll2;
-    private JTable tablaBD, tablaBD2;
+    private JScrollPane scroll, scroll2, scroll3;
+    private JTable tablaBD, tablaBD2, tablaBD3;
 
     //Para poder conectarse a la base de datos
     private final conexionDB meConecto = new conexionDB();
@@ -494,10 +494,10 @@ final class PedidoP extends JFrame {
         txt_FechaPedido.setBounds(290, 65, 90, 20);
         pestaña03.add(txt_FechaPedido);
 
-        tablaBD2 = new JTable();
-        scroll2 = new JScrollPane(tablaBD2);
-        scroll2.setBounds(5, 125, 430, 170);
-        pestaña03.add(scroll2);
+        tablaBD3 = new JTable();
+        scroll3 = new JScrollPane(tablaBD3);
+        scroll3.setBounds(5, 125, 430, 170);
+        pestaña03.add(scroll3);
 
         JButton btn_Buscar = new JButton("Buscar");
         btn_Buscar.setBounds(334, 5, 90, 20);
@@ -690,6 +690,7 @@ final class PedidoP extends JFrame {
             //Para establecer el modelo al JTable
             DefaultTableModel modelo = new DefaultTableModel();
             tablaBD2.setModel(modelo);
+            tablaBD3.setModel(modelo);
 
             //Nuestra sentencia SQL
             String sentencia = "SELECT * FROM `linea_pedido_prov` ORDER BY `Id_pedido` ASC";
