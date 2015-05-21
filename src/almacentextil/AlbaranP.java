@@ -371,49 +371,10 @@ final class AlbaranP extends JFrame {
 
         cmb_IDAlbaran2 = new JComboBox();
         cmb_IDAlbaran2.setBounds(90, 25, 90, 20);
-        pestaña03.add(cmb_IDAlbaran2);
-
-        JLabel lbl_idprov = new JLabel("Id Pedido:");
-        lbl_idprov.setBounds(200, 25, 90, 20);
-        pestaña03.add(lbl_idprov);
-
-        txt_IDPedido2 = new JTextField();
-        txt_IDPedido2.setEditable(false);
-        txt_IDPedido2.setBounds(275, 25, 90, 20);
-        pestaña03.add(txt_IDPedido2);
-
-        JLabel lbl_FechaEnvio = new JLabel("Fecha Envio:");
-        lbl_FechaEnvio.setBounds(10, 65, 80, 20);
-        pestaña03.add(lbl_FechaEnvio);
-
-        txt_FechaEnvio = new JTextField();
-        txt_FechaEnvio.setEditable(false);
-        txt_FechaEnvio.setBounds(90, 65, 90, 20);
-        pestaña03.add(txt_FechaEnvio);
-
-        JLabel lbl_FechaPedido = new JLabel("Fecha Pedido:");
-        lbl_FechaPedido.setBounds(200, 65, 80, 20);
-        pestaña03.add(lbl_FechaPedido);
-
-        txt_FechaPedido = new JTextField();
-        txt_FechaPedido.setEditable(false);
-        txt_FechaPedido.setBounds(290, 65, 90, 20);
-        pestaña03.add(txt_FechaPedido);
-
-        tablaBD3 = new JTable();
-        scroll3 = new JScrollPane(tablaBD3);
-        scroll3.setBounds(5, 125, 430, 170);
-        pestaña03.add(scroll3);
-
-        JButton btn_Buscar = new JButton("Buscar");
-        btn_Buscar.setBounds(334, 5, 90, 20);
-        pestaña03.add(btn_Buscar);
-
-        btn_Buscar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-
-                int buscarA1 = (Integer) cmb_IDAlbaran2.getSelectedItem();
+        cmb_IDAlbaran2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int buscarA1 = (Integer) cmb_IDAlbaran2.getSelectedItem();
 
                 Connection miConexion = (Connection) meConecto.ConectarMysql();
 
@@ -455,8 +416,43 @@ final class AlbaranP extends JFrame {
                 }
 
                 OtraConsulta();
-            }
-        });
+			}
+		});
+        pestaña03.add(cmb_IDAlbaran2);
+
+        JLabel lbl_idprov = new JLabel("Id Pedido:");
+        lbl_idprov.setBounds(200, 25, 90, 20);
+        pestaña03.add(lbl_idprov);
+
+        txt_IDPedido2 = new JTextField();
+        txt_IDPedido2.setEditable(false);
+        txt_IDPedido2.setBounds(275, 25, 90, 20);
+        pestaña03.add(txt_IDPedido2);
+
+        JLabel lbl_FechaEnvio = new JLabel("Fecha Envio:");
+        lbl_FechaEnvio.setBounds(10, 65, 80, 20);
+        pestaña03.add(lbl_FechaEnvio);
+
+        txt_FechaEnvio = new JTextField();
+        txt_FechaEnvio.setEditable(false);
+        txt_FechaEnvio.setBounds(90, 65, 90, 20);
+        pestaña03.add(txt_FechaEnvio);
+
+        JLabel lbl_FechaPedido = new JLabel("Fecha Pedido:");
+        lbl_FechaPedido.setBounds(200, 65, 80, 20);
+        pestaña03.add(lbl_FechaPedido);
+
+        txt_FechaPedido = new JTextField();
+        txt_FechaPedido.setEditable(false);
+        txt_FechaPedido.setBounds(290, 65, 90, 20);
+        pestaña03.add(txt_FechaPedido);
+
+        tablaBD3 = new JTable();
+        scroll3 = new JScrollPane(tablaBD3);
+        scroll3.setBounds(5, 125, 430, 170);
+        pestaña03.add(scroll3);
+
+
     }
 
     //Metodo para llenar los JComboBox

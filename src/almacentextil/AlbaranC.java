@@ -16,10 +16,10 @@ final class AlbaranC extends JFrame {
     private String[] DIAS;
     final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
     private int ultimoID_Pedido;
-    private JTextField txt_IDAlbaran, txt_FechaPedido, txt_FechaEnvio,txt_IDPedido2;
+    private JTextField txt_IDAlbaran, txt_FechaPedido, txt_FechaEnvio, txt_IDPedido2;
     private JComboBox cmb_IDPedido1, cmb_IDAlbaran, cmb_IDProd, cmb_IDPedido2, cmb_IDAlbaran2;
-    private JScrollPane scroll, scroll2,scroll3;
-    private JTable tablaBD, tablaBD2,tablaBD3;
+    private JScrollPane scroll, scroll2, scroll3;
+    private JTable tablaBD, tablaBD2, tablaBD3;
 
     //Para poder conectarse a la base de datos
     private final conexionDB meConecto = new conexionDB();
@@ -371,48 +371,10 @@ final class AlbaranC extends JFrame {
 
         cmb_IDAlbaran2 = new JComboBox();
         cmb_IDAlbaran2.setBounds(90, 25, 90, 20);
-        pestaña03.add(cmb_IDAlbaran2);
-
-        JLabel lbl_idCli = new JLabel("Id Pedido:");
-        lbl_idCli.setBounds(200, 25, 90, 20);
-        pestaña03.add(lbl_idCli);
-
-        txt_IDPedido2 = new JTextField();
-        txt_IDPedido2.setEditable(false);
-        txt_IDPedido2.setBounds(275, 25, 90, 20);
-        pestaña03.add(txt_IDPedido2);
-
-        JLabel lbl_FechaEnvio = new JLabel("Fecha Envio:");
-        lbl_FechaEnvio.setBounds(10, 65, 80, 20);
-        pestaña03.add(lbl_FechaEnvio);
-
-        txt_FechaEnvio = new JTextField();
-        txt_FechaEnvio.setEditable(false);
-        txt_FechaEnvio.setBounds(90, 65, 90, 20);
-        pestaña03.add(txt_FechaEnvio);
-        
-        tablaBD3 = new JTable();
-        scroll3 = new JScrollPane(tablaBD3);
-        scroll3.setBounds(5, 125, 430, 170);
-        pestaña03.add(scroll3);
-
-        JLabel lbl_FechaPedido = new JLabel("Fecha Pedido:");
-        lbl_FechaPedido.setBounds(200, 65, 80, 20);
-        pestaña03.add(lbl_FechaPedido);
-
-        txt_FechaPedido = new JTextField();
-        txt_FechaPedido.setEditable(false);
-        txt_FechaPedido.setBounds(290, 65, 90, 20);
-        pestaña03.add(txt_FechaPedido);
-
-        JButton btn_Buscar = new JButton("Buscar");
-        btn_Buscar.setBounds(334, 5, 90, 20);
-        pestaña03.add(btn_Buscar);
-
-        btn_Buscar.addActionListener(new ActionListener() {
+        cmb_IDAlbaran2.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent evt) {
-
+            public void actionPerformed(ActionEvent e) {
+                   
                 int buscarA1 = (Integer) cmb_IDAlbaran2.getSelectedItem();
 
                 Connection miConexion = (Connection) meConecto.ConectarMysql();
@@ -456,7 +418,43 @@ final class AlbaranC extends JFrame {
 
                 OtraConsulta();
             }
+
         });
+        pestaña03.add(cmb_IDAlbaran2);
+
+        JLabel lbl_idCli = new JLabel("Id Pedido:");
+        lbl_idCli.setBounds(200, 25, 90, 20);
+        pestaña03.add(lbl_idCli);
+
+        txt_IDPedido2 = new JTextField();
+        txt_IDPedido2.setEditable(false);
+        txt_IDPedido2.setBounds(275, 25, 90, 20);
+        pestaña03.add(txt_IDPedido2);
+
+        JLabel lbl_FechaEnvio = new JLabel("Fecha Envio:");
+        lbl_FechaEnvio.setBounds(10, 65, 80, 20);
+        pestaña03.add(lbl_FechaEnvio);
+
+        txt_FechaEnvio = new JTextField();
+        txt_FechaEnvio.setEditable(false);
+        txt_FechaEnvio.setBounds(90, 65, 90, 20);
+        pestaña03.add(txt_FechaEnvio);
+
+        tablaBD3 = new JTable();
+        scroll3 = new JScrollPane(tablaBD3);
+        scroll3.setBounds(5, 125, 430, 170);
+        pestaña03.add(scroll3);
+
+        JLabel lbl_FechaPedido = new JLabel("Fecha Pedido:");
+        lbl_FechaPedido.setBounds(200, 65, 80, 20);
+        pestaña03.add(lbl_FechaPedido);
+
+        txt_FechaPedido = new JTextField();
+        txt_FechaPedido.setEditable(false);
+        txt_FechaPedido.setBounds(290, 65, 90, 20);
+        pestaña03.add(txt_FechaPedido);
+
+
     }
 
     //Metodo para llenar los JComboBox
@@ -481,7 +479,6 @@ final class AlbaranC extends JFrame {
 
         cmb_IDAlbaran.removeAllItems();
         cmb_IDAlbaran2.removeAllItems();
-        
 
         Connection miConexion = (Connection) meConecto.ConectarMysql();
 
@@ -533,7 +530,6 @@ final class AlbaranC extends JFrame {
     }
 
     //Pilla el ide de los clientes y lo guarda en el combo (pestaña1)
-
     public void ejecutarPedidos() {
 
         cmb_IDPedido1.removeAllItems();
@@ -552,7 +548,7 @@ final class AlbaranC extends JFrame {
             //Creando las filas para el JTable
             while (rs.next()) {
                 cmb_IDPedido1.addItem(rs.getString("Id_pedido"));
-                
+
             }
             rs.close();
             miConexion.close();
@@ -563,7 +559,6 @@ final class AlbaranC extends JFrame {
     }
 
     //Pilla el id de los productos y lo guarda en el combo(pestaña2)
-
     public void ejecutarProductos() {
 
         cmb_IDProd.removeAllItems();
@@ -638,7 +633,7 @@ final class AlbaranC extends JFrame {
 
     public void OtraConsulta() {
 
-        String buscarA2 = ""+ cmb_IDAlbaran2.getSelectedItem();
+        String buscarA2 = "" + cmb_IDAlbaran2.getSelectedItem();
         Date fecha1 = null;
         Date fecha2 = null;
         String pedidoID = null;
