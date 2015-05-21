@@ -19,10 +19,9 @@ public final class FacturaC extends JFrame {
     private String[] DIAS;
     final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
 
-
     public FacturaC() {
 
-        setTitle(" -- Facturas -- ");
+        setTitle(" -- Facturas Clientes -- ");
         setSize(450, 400);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -31,7 +30,7 @@ public final class FacturaC extends JFrame {
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
         getContentPane().add(topPanel);
-        
+
         cargarFechas();
 
         //Creamos el contenido de cada pestaña
@@ -53,7 +52,7 @@ public final class FacturaC extends JFrame {
 
         pestaña01 = new JPanel();
         pestaña01.setLayout(null);
-        
+
         JLabel lbl_idFac = new JLabel("ID Factura:");
         lbl_idFac.setBounds(10, 15, 80, 20);
         pestaña01.add(lbl_idFac);
@@ -61,7 +60,7 @@ public final class FacturaC extends JFrame {
         JTextField txt_idFac = new JTextField();
         txt_idFac.setEditable(false);
         txt_idFac.setBounds(100, 15, 150, 20);
-        
+
         pestaña01.add(txt_idFac);
 
         JLabel lbl_idPed = new JLabel("ID Pedido:");
@@ -71,12 +70,12 @@ public final class FacturaC extends JFrame {
         JComboBox cmb_idPed = new JComboBox();
         cmb_idPed.setBounds(100, 60, 150, 20);
         pestaña01.add(cmb_idPed);
-        
+
         JLabel lbl_fechaFac = new JLabel("Fecha Factura:");
         lbl_fechaFac.setBounds(10, 105, 80, 20);
         pestaña01.add(lbl_fechaFac);
-        
-       JComboBox cmboxDias = new JComboBox(DIAS);
+
+        JComboBox cmboxDias = new JComboBox(DIAS);
         cmboxDias.setBounds(100, 105, 40, 20);
         cmboxDias.setSelectedIndex(1);
         pestaña01.add(cmboxDias);
@@ -88,49 +87,48 @@ public final class FacturaC extends JFrame {
         JComboBox cmboxYear = new JComboBox(AÑOS);
         cmboxYear.setBounds(250, 105, 80, 20);
         pestaña01.add(cmboxYear);
-        
+
         JLabel lbl_totSin = new JLabel("Total sin IVA:");
         lbl_totSin.setBounds(10, 155, 80, 20);
         pestaña01.add(lbl_totSin);
-        
+
         JTextField txt_totSin = new JTextField();
         txt_totSin.setBounds(100, 155, 150, 20);
         pestaña01.add(txt_totSin);
-        
+
         JLabel lbl_desc = new JLabel("Descuento:");
         lbl_desc.setBounds(10, 200, 80, 20);
         pestaña01.add(lbl_desc);
-        
+
         JTextField txt_desc = new JTextField();
         txt_desc.setBounds(100, 200, 150, 20);
         pestaña01.add(txt_desc);
-        
+
         JLabel lbl_totCon = new JLabel("Total con IVA:");
         lbl_totCon.setBounds(10, 255, 80, 20);
         pestaña01.add(lbl_totCon);
-        
+
         JTextField txt_totCon = new JTextField();
         txt_totCon.setEditable(false);
         txt_totCon.setBounds(100, 255, 150, 20);
         pestaña01.add(txt_totCon);
-        
+
         JButton btn_acept = new JButton("Aceptar");
-        btn_acept.setBounds(200, 300, 90,27);
+        btn_acept.setBounds(200, 300, 90, 27);
         pestaña01.add(btn_acept);
         JButton btn_limp = new JButton("Limpiar");
-        btn_limp.setBounds(300, 300, 90,27);
+        btn_limp.setBounds(300, 300, 90, 27);
         pestaña01.add(btn_limp);
-        
-         btn_acept.addActionListener(new ActionListener() {
+
+        btn_acept.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 try {
-                    
-        
+
                     nFactura = txt_idFac.getText();
-                    String fecha = ""+(String)cmboxDias.getSelectedItem()+"/"+(String)cmboxMeses.getSelectedItem()+"/"+(String)cmboxYear.getSelectedItem();
-                    imprimir((String)cmb_idPed.getSelectedItem(),fecha, txt_totSin.getText(), txt_desc.getText(), txt_totCon.getText());
-                   
+                    String fecha = "" + (String) cmboxDias.getSelectedItem() + "/" + (String) cmboxMeses.getSelectedItem() + "/" + (String) cmboxYear.getSelectedItem();
+                    imprimir((String) cmb_idPed.getSelectedItem(), fecha, txt_totSin.getText(), txt_desc.getText(), txt_totCon.getText());
+
                 } catch (Exception err) {
                     System.out.println(err);
                 }
@@ -148,7 +146,7 @@ public final class FacturaC extends JFrame {
 
         JComboBox cmb_idFac = new JComboBox();
         cmb_idFac.setBounds(100, 15, 150, 20);
-        
+
         pestaña02.add(cmb_idFac);
 
         JLabel lbl_idPed = new JLabel("ID Pedido:");
@@ -158,12 +156,12 @@ public final class FacturaC extends JFrame {
         JComboBox cmb_idPed = new JComboBox();
         cmb_idPed.setBounds(100, 60, 150, 20);
         pestaña02.add(cmb_idPed);
-        
+
         JLabel lbl_fechaFac = new JLabel("Fecha Factura:");
         lbl_fechaFac.setBounds(10, 105, 80, 20);
         pestaña02.add(lbl_fechaFac);
-        
-       JComboBox cmboxDias = new JComboBox(DIAS);
+
+        JComboBox cmboxDias = new JComboBox(DIAS);
         cmboxDias.setBounds(100, 105, 40, 20);
         cmboxDias.setSelectedIndex(1);
         pestaña02.add(cmboxDias);
@@ -175,54 +173,54 @@ public final class FacturaC extends JFrame {
         JComboBox cmboxYear = new JComboBox(AÑOS);
         cmboxYear.setBounds(250, 105, 80, 20);
         pestaña02.add(cmboxYear);
-        
+
         JLabel lbl_totSin = new JLabel("Total sin IVA:");
         lbl_totSin.setBounds(10, 155, 80, 20);
         pestaña02.add(lbl_totSin);
-        
+
         JTextField txt_totSin = new JTextField();
         txt_totSin.setBounds(100, 155, 150, 20);
         pestaña02.add(txt_totSin);
-        
+
         JLabel lbl_desc = new JLabel("Descuento:");
         lbl_desc.setBounds(10, 200, 80, 20);
         pestaña02.add(lbl_desc);
-        
+
         JTextField txt_desc = new JTextField();
         txt_desc.setBounds(100, 200, 150, 20);
         pestaña02.add(txt_desc);
-        
+
         JLabel lbl_totCon = new JLabel("Total con IVA:");
         lbl_totCon.setBounds(10, 255, 80, 20);
         pestaña02.add(lbl_totCon);
-        
+
         JTextField txt_totCon = new JTextField();
         txt_totCon.setEditable(false);
         txt_totCon.setBounds(100, 255, 150, 20);
         pestaña02.add(txt_totCon);
-        
-        JButton btnBuscar = new JButton("Buscar");    
+
+        JButton btnBuscar = new JButton("Buscar");
         btnBuscar.setBounds(334, 10, 90, 25);
         pestaña02.add(btnBuscar);
-        
+
         JButton btn_acept = new JButton("Aceptar");
-        btn_acept.setBounds(200, 300, 90,27);
+        btn_acept.setBounds(200, 300, 90, 27);
         pestaña02.add(btn_acept);
         JButton btn_limp = new JButton("Limpiar");
-        btn_limp.setBounds(300, 300, 90,27);
+        btn_limp.setBounds(300, 300, 90, 27);
         pestaña02.add(btn_limp);
-        
-         btn_acept.addActionListener(new ActionListener() {
+
+        btn_acept.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 try {
-                    
+
                 } catch (Exception err) {
                     System.out.println(err);
                 }
             }
         });
-        
+
     }
 
     public void crearPestaña03() {
@@ -230,11 +228,11 @@ public final class FacturaC extends JFrame {
         pestaña03.setLayout(null);
 
         JTextArea area = new JTextArea();
-        JScrollPane areaLista = new JScrollPane(area);        
+        JScrollPane areaLista = new JScrollPane(area);
         areaLista.setBounds(5, 35, 420, 250);
         area.setEditable(false);
         pestaña03.add(areaLista);
-        
+
         JButton btn_Volver = new JButton("Volver");
         btn_Volver.setBounds(334, 5, 90, 20);
         pestaña03.add(btn_Volver);
@@ -249,7 +247,6 @@ public final class FacturaC extends JFrame {
 
         JLabel lblID = new JLabel("ID: ");
         pestaña03.add(lblID);
-        
 
         btn_Buscar.addActionListener(new ActionListener() {
             @Override
@@ -300,25 +297,28 @@ public final class FacturaC extends JFrame {
             }
         });
     }
-     static public void imprimir(String id_p,String fecha,String totalsinIVA,String destuento,String totalconIVA) throws IOException {
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\joseantonio\\Documents\\NetBeansProjects\\AlmacenTextil\\src\\Facturas\\Factura"+nFactura+".txt"));
+    static public void imprimir(String id_p, String fecha, String totalsinIVA, String destuento, String totalconIVA) throws IOException {
 
-        bw.write("Numero de factura: "+nFactura);
+        //BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\joseantonio\\Documents\\NetBeansProjects\\AlmacenTextil\\src\\Facturas\\Factura" + nFactura + ".txt"));
+        BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\David\\Documents\\NetBeansProjects\\AlmacenTextil\\src\\Facturas\\Factura" + nFactura + ".txt"));
+
+        bw.write("Numero de factura: " + nFactura);
         bw.newLine();
-        bw.write("Numero del pedido: "+id_p);
+        bw.write("Numero del pedido: " + id_p);
         bw.newLine();
-        bw.write("Fecha de la factura: "+fecha);
+        bw.write("Fecha de la factura: " + fecha);
         bw.newLine();
-        bw.write("Total (sin IVA): "+totalsinIVA+"€");
+        bw.write("Total (sin IVA): " + totalsinIVA + "€");
         bw.newLine();
-        bw.write("Descuento aplicado: "+destuento+"%");
+        bw.write("Descuento aplicado: " + destuento + "%");
         bw.newLine();
-        bw.write("Total (con IVA): "+totalconIVA+"€");
+        bw.write("Total (con IVA): " + totalconIVA + "€");
         bw.newLine();
         bw.close();
     }
-     void cargarFechas() {
+
+    void cargarFechas() {
 
         DIAS = new String[31];
         for (int a = 1; a < 31; a++) {
