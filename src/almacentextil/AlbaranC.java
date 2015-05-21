@@ -17,7 +17,7 @@ final class AlbaranC extends JFrame {
     final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
     private int ultimoID_Pedido;
     private JTextField txt_IDAlbaran, txt_FechaPedido, txt_FechaEnvio;
-    private JComboBox cmb_IDPedido1, cmb_IDPedido, cmb_IDProd, cmb_IDCliente2, cmb_IDPedido2;
+    private JComboBox cmb_IDPedido1, cmb_IDAlbaran, cmb_IDProd, cmb_IDCliente2, cmb_IDPedido2;
     private JScrollPane scroll, scroll2;
     private JTable tablaBD, tablaBD2;
 
@@ -213,9 +213,9 @@ final class AlbaranC extends JFrame {
         lbl_IDAlbaran.setBounds(30, 25, 68, 22);
         pestaña02.add(lbl_IDAlbaran);
 
-        cmb_IDPedido = new JComboBox();
-        cmb_IDPedido.setBounds(90, 25, 90, 20);
-        pestaña02.add(cmb_IDPedido);
+        cmb_IDAlbaran = new JComboBox();
+        cmb_IDAlbaran.setBounds(90, 25, 90, 20);
+        pestaña02.add(cmb_IDAlbaran);
 
         JLabel lbl_IDProd = new JLabel("Id Producto:");
         lbl_IDProd.setBounds(200, 25, 90, 20);
@@ -225,49 +225,23 @@ final class AlbaranC extends JFrame {
         cmb_IDProd.setBounds(280, 25, 70, 20);
         pestaña02.add(cmb_IDProd);
 
-        JLabel lbl_precio = new JLabel("Precio:");
-        lbl_precio.setBounds(30, 60, 90, 20);
-        pestaña02.add(lbl_precio);
-
-        JTextField txt_precio = new JTextField();
-        txt_precio.setBounds(90, 60, 50, 20);
-        txt_precio.setEditable(false);
-        pestaña02.add(txt_precio);
-
         JLabel lbl_cantidad = new JLabel("Cantidad:");
-        lbl_cantidad.setBounds(150, 60, 90, 20);
+        lbl_cantidad.setBounds(30, 60, 90, 20);
         pestaña02.add(lbl_cantidad);
 
         SpinnerModel sm = new SpinnerNumberModel(0, 0, 10, 1);
         JSpinner spn_cantidad = new JSpinner(sm);
-        spn_cantidad.setBounds(210, 60, 50, 20);
+        spn_cantidad.setBounds(90, 60, 50, 20);
         pestaña02.add(spn_cantidad);
-
-        JLabel lbl_total = new JLabel("Total: ");
-        lbl_total.setBounds(270, 60, 90, 20);
-        pestaña02.add(lbl_total);
-
-        JTextField txt_total = new JTextField();
-        txt_total.setBounds(310, 60, 50, 20);
-        txt_total.setEditable(false);
-        pestaña02.add(txt_total);
 
         tablaBD2 = new JTable();
         scroll2 = new JScrollPane(tablaBD2);
         scroll2.setBounds(5, 125, 430, 170);
         pestaña02.add(scroll2);
 
-        JButton btn_Suma = new JButton("Sum");
-        btn_Suma.setBounds(370, 60, 60, 20);
-        pestaña02.add(btn_Suma);
-
         JButton btn_Aceptar = new JButton("Aceptar");
         btn_Aceptar.setBounds(200, 300, 90, 27);
         pestaña02.add(btn_Aceptar);
-
-        JButton btn_Buscar = new JButton("Buscar");
-        btn_Buscar.setBounds(360, 25, 75, 20);
-        pestaña02.add(btn_Buscar);
 
         JButton btn_Limpiar = new JButton("Limpiar");
         btn_Limpiar.setBounds(300, 300, 90, 27);
@@ -285,45 +259,42 @@ final class AlbaranC extends JFrame {
 
                 boolean eliminado = false;
 
-                int eliminarA1 = (Integer) cmb_IDPedido.getSelectedItem();
+                int eliminarA1 = (Integer) cmb_IDAlbaran.getSelectedItem();
                 int eliminarA2 = (Integer) cmb_IDProd.getSelectedItem();
 
-                if (txt_precio.getText().equalsIgnoreCase("")) {
-                    JOptionPane.showMessageDialog(null, "Seleccione un Producto", "Aviso", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    int Borrar = JOptionPane.showConfirmDialog(null, "Eliminar: " + eliminarA1 + " - " + eliminarA2);
+                int Borrar = JOptionPane.showConfirmDialog(null, "Eliminar: " + eliminarA1 + " - " + eliminarA2);
 
-                    if (JOptionPane.OK_OPTION == Borrar) {
-                        Connection miConexion = (Connection) meConecto.ConectarMysql();
+                if (JOptionPane.OK_OPTION == Borrar) {
+                    Connection miConexion = (Connection) meConecto.ConectarMysql();
 
-                        try (Statement st = miConexion.createStatement()) {
+                    try (Statement st = miConexion.createStatement()) {
 
-                            //Para ejecutar la consulta
-                            String query = "DELETE FROM `linea_pedido_cli` WHERE `Id_pedido` = " + eliminarA1 + " and `Id_producto` = " + eliminarA2 + "";
+                        //Para ejecutar la consulta
+                        String query = "DELETE FROM `linea_albaran_cli` WHERE `Id_albaran` = " + eliminarA1 + " and `Id_producto` = " + eliminarA2 + "";
 
-                            Statement s = miConexion.createStatement();
-                            st.executeUpdate(query);
-                            eliminado = true;
+                        Statement s = miConexion.createStatement();
+                        st.executeUpdate(query);
+                        eliminado = true;
 
-                            miConexion.close();
+                        miConexion.close();
 
-                            if (eliminado == true) {
-                                JOptionPane.showMessageDialog(null, "Eliminado Con Exito!", "Eliminado", JOptionPane.INFORMATION_MESSAGE);
-                                ejecutarPedidos();
-                                ejecutarPedido_CLi();
-                                ejecutarProductos();
-                                ejecutarLineasPedido();
-                            }
-
-                        } catch (Exception ex) {
-                            JOptionPane.showMessageDialog(null, "Se ha producido un Error", "Error", JOptionPane.ERROR_MESSAGE);
-                            ex.printStackTrace();
-                            eliminado = false;
+                        if (eliminado == true) {
+                            JOptionPane.showMessageDialog(null, "Eliminado Con Exito!", "Eliminado", JOptionPane.INFORMATION_MESSAGE);
+                            ejecutarPedidos();
+                            ejecutarPedido_CLi();
+                            ejecutarProductos();
+                            ejecutarLineasPedido();
                         }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Eliminacion Cancelada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, "Se ha producido un Error", "Error", JOptionPane.ERROR_MESSAGE);
+                        ex.printStackTrace();
+                        eliminado = false;
                     }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Eliminacion Cancelada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                 }
+
             }
         }
         );
@@ -334,72 +305,13 @@ final class AlbaranC extends JFrame {
                     public void actionPerformed(ActionEvent evt
                     ) {
                         try {
-                            txt_total.setText("");
-                            txt_precio.setText("");
+
                             cmb_IDProd.setSelectedIndex(0);
-                            cmb_IDPedido.setSelectedIndex(0);
+                            cmb_IDAlbaran.setSelectedIndex(0);
                             spn_cantidad.setValue(0);
 
                         } catch (Exception err) {
                             System.out.println("Error: " + err);
-                        }
-                    }
-                }
-        );
-
-        btn_Suma.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt
-                    ) {
-                        try {
-
-                            if (txt_precio.getText().equalsIgnoreCase("")) {
-                                JOptionPane.showMessageDialog(null, "Seleccione Producto", "Aviso", JOptionPane.INFORMATION_MESSAGE);
-                            } else {
-                                float cantidad = (float) ((Integer) spn_cantidad.getValue());
-                                float precio = Float.parseFloat(txt_precio.getText());
-                                float result = precio * cantidad;
-                                txt_total.setText(Integer.toString((int) result));
-                            }
-                        } catch (Exception e) {
-                            System.out.println("Error 275: " + e);
-                        }
-
-                    }
-                }
-        );
-
-        btn_Buscar.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent evt
-                    ) {
-                        int buscarA = (Integer) cmb_IDProd.getSelectedItem();
-
-                        Connection miConexion = (Connection) meConecto.ConectarMysql();
-
-                        try (Statement st = miConexion.createStatement()) {
-
-                            //Para ejecutar la consulta
-                            String query = "SELECT * FROM `producto` WHERE `Id_producto` = " + buscarA + "";
-                            Statement s = miConexion.createStatement();
-
-                            //Almacenamos en un ResultSet
-                            ResultSet rs = s.executeQuery(query);
-
-                            //Obteniendo la informacion de las columnas que estan siendo consultadas
-                            ResultSetMetaData rsMd = rs.getMetaData();
-
-                            //Creando las filas para el JTable
-                            while (rs.next()) {
-
-                                txt_precio.setText(rs.getString("Precio_uni"));
-                            }
-                            rs.close();
-                            miConexion.close();
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
                         }
                     }
                 }
@@ -411,46 +323,40 @@ final class AlbaranC extends JFrame {
                     public void actionPerformed(ActionEvent evt
                     ) {
 
-                        if (txt_total.getText().equalsIgnoreCase("")) {
-                            JOptionPane.showMessageDialog(null, "Realice la sum", "Aviso", JOptionPane.INFORMATION_MESSAGE);
-                        } else {
+                        int IDalbaran = (Integer) cmb_IDAlbaran.getSelectedItem();
+                        int IDProducto = (Integer) cmb_IDProd.getSelectedItem();
+                        int Cantidad = (Integer) spn_cantidad.getValue();
+                        String NULL = null;
 
-                            int IDPedido = (Integer) cmb_IDPedido.getSelectedItem();
-                            int IDProducto = (Integer) cmb_IDProd.getSelectedItem();
-                            String Precio = txt_precio.getText();
-                            int Cantidad = (Integer) spn_cantidad.getValue();
-                            int Total = Integer.parseInt(txt_total.getText());
-                            String NULL = null;
+                        Connection miConexion = (Connection) meConecto.ConectarMysql();
+                        boolean insertado = false;
 
-                            Connection miConexion = (Connection) meConecto.ConectarMysql();
-                            boolean insertado = false;
+                        try (Statement st = miConexion.createStatement()) {
 
-                            try (Statement st = miConexion.createStatement()) {
+                            //Para ejecutar la consulta
+                            String query = "INSERT INTO `almacentextil`.`linea_albaran_cli`(`Id_albaran`, `Id_linea`, `Id_producto`, `Cantidad`) VALUES ('" + IDalbaran + "', " + NULL + ", '" + IDProducto + "', '" + Cantidad + "')";
+                            Statement s = miConexion.createStatement();
+                            st.executeUpdate(query);
+                            insertado = true;
 
-                                //Para ejecutar la consulta
-                                String query = "INSERT INTO `almacentextil`.`linea_pedido_cli` (`Id_pedido`, `Id_producto`, `Id_linea`, `Precio`, `Cantidad`, `Total`) VALUES ('" + IDPedido + "', '" + IDProducto + "', " + NULL + ", '" + Precio + "', '" + Cantidad + "', '" + Total + "')";
-                                Statement s = miConexion.createStatement();
-                                st.executeUpdate(query);
-                                insertado = true;
+                            miConexion.close();
 
-                                miConexion.close();
-
-                                if (insertado == true) {
-                                    JOptionPane.showMessageDialog(null, "Insertado Con Exito!", "Guardado", JOptionPane.INFORMATION_MESSAGE);
-                                    ejecutarPedidos();
-                                    ejecutarPedido_CLi();
-                                    ejecutarProductos();
-                                    ejecutarLineasPedido();
-                                }
-
-                            } catch (Exception ex) {
-                                JOptionPane.showMessageDialog(null, "Se ha producido un Error", "Error", JOptionPane.ERROR_MESSAGE);
-                                ex.printStackTrace();
-                                insertado = false;
+                            if (insertado == true) {
+                                JOptionPane.showMessageDialog(null, "Insertado Con Exito!", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+                                ejecutarPedidos();
+                                ejecutarPedido_CLi();
+                                ejecutarProductos();
+                                ejecutarLineasPedido();
                             }
 
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(null, "Se ha producido un Error", "Error", JOptionPane.ERROR_MESSAGE);
+                            ex.printStackTrace();
+                            insertado = false;
                         }
+
                     }
+
                 }
         );
     }
@@ -547,7 +453,7 @@ final class AlbaranC extends JFrame {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                
+
                 OtraConsulta();
             }
         });
@@ -573,7 +479,7 @@ final class AlbaranC extends JFrame {
 
     public void ejecutarPedido_CLi() {
 
-        cmb_IDPedido.removeAllItems();
+        cmb_IDAlbaran.removeAllItems();
         cmb_IDPedido2.removeAllItems();
         cmb_IDCliente2.removeAllItems();
 
@@ -606,7 +512,7 @@ final class AlbaranC extends JFrame {
             while (rs.next()) {
                 Object[] fila = new Object[cantidadColumnas];
                 ultimoID_Pedido = rs.getInt("Id_albaran");
-                cmb_IDPedido.addItem(rs.getInt("Id_albaran"));
+                cmb_IDAlbaran.addItem(rs.getInt("Id_albaran"));
                 cmb_IDPedido2.addItem(rs.getInt("Id_albaran"));
                 //cmb_IDCliente2.addItem(rs.getString("CIF_Cli"));
 
@@ -625,11 +531,13 @@ final class AlbaranC extends JFrame {
         ultimoID_Pedido = ultimoID_Pedido + 1;
         txt_IDAlbaran.setText(Integer.toString(ultimoID_Pedido));
     }
+
     //Pilla el ide de los clientes y lo guarda en el combo (pestaña1)
+
     public void ejecutarPedidos() {
 
         cmb_IDPedido1.removeAllItems();
-        
+
         Connection miConexion = (Connection) meConecto.ConectarMysql();
 
         try (Statement st = miConexion.createStatement()) {
@@ -644,7 +552,7 @@ final class AlbaranC extends JFrame {
             //Creando las filas para el JTable
             while (rs.next()) {
                 cmb_IDPedido1.addItem(rs.getString("Id_pedido"));
-                
+
             }
             rs.close();
             miConexion.close();
@@ -653,7 +561,9 @@ final class AlbaranC extends JFrame {
             System.err.println(e.getMessage());
         }
     }
+
     //Pilla el id de los productos y lo guarda en el combo(pestaña2)
+
     public void ejecutarProductos() {
 
         cmb_IDProd.removeAllItems();
