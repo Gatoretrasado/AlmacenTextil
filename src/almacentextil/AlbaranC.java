@@ -16,8 +16,8 @@ final class AlbaranC extends JFrame {
     private String[] DIAS;
     final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
     private int ultimoID_Pedido;
-    private JTextField txt_IDAlbaran, txt_FechaPedido, txt_FechaEnvio;
-    private JComboBox cmb_IDPedido1, cmb_IDAlbaran, cmb_IDProd, cmb_IDCliente2, cmb_IDPedido2;
+    private JTextField txt_IDAlbaran, txt_FechaPedido, txt_FechaEnvio,txt_IDPedido2;
+    private JComboBox cmb_IDPedido1, cmb_IDAlbaran, cmb_IDProd, cmb_IDPedido2, cmb_IDAlbaran2;
     private JScrollPane scroll, scroll2;
     private JTable tablaBD, tablaBD2;
 
@@ -47,7 +47,7 @@ final class AlbaranC extends JFrame {
         tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Crear Albaran", pestaña01);
         tabbedPane.addTab("Añadir Productos", pestaña02);
-        tabbedPane.addTab("Mostrar Pedido", pestaña03);
+        tabbedPane.addTab("Mostrar Albaran", pestaña03);
         topPanel.add(tabbedPane, BorderLayout.CENTER);
 
         ejecutarPedido_CLi();
@@ -365,22 +365,22 @@ final class AlbaranC extends JFrame {
         pestaña03 = new JPanel();
         pestaña03.setLayout(null);
 
-        JLabel lbl_idP = new JLabel("Id Pedido:");
+        JLabel lbl_idP = new JLabel("Id Albaran:");
         lbl_idP.setBounds(10, 25, 68, 22);
         pestaña03.add(lbl_idP);
 
-        cmb_IDPedido2 = new JComboBox();
-        cmb_IDPedido2.setBounds(90, 25, 90, 20);
-        pestaña03.add(cmb_IDPedido2);
+        cmb_IDAlbaran2 = new JComboBox();
+        cmb_IDAlbaran2.setBounds(90, 25, 90, 20);
+        pestaña03.add(cmb_IDAlbaran2);
 
-        JLabel lbl_idCli = new JLabel("Id Cliente:");
+        JLabel lbl_idCli = new JLabel("Id Pedido:");
         lbl_idCli.setBounds(200, 25, 90, 20);
         pestaña03.add(lbl_idCli);
 
-        cmb_IDCliente2 = new JComboBox();
-        cmb_IDCliente2.setEditable(false);
-        cmb_IDCliente2.setBounds(275, 25, 90, 20);
-        pestaña03.add(cmb_IDCliente2);
+        txt_IDPedido2 = new JTextField();
+        txt_IDPedido2.setEditable(false);
+        txt_IDPedido2.setBounds(275, 25, 90, 20);
+        pestaña03.add(txt_IDPedido2);
 
         JLabel lbl_FechaEnvio = new JLabel("Fecha Envio:");
         lbl_FechaEnvio.setBounds(10, 65, 80, 20);
@@ -413,7 +413,7 @@ final class AlbaranC extends JFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
 
-                int buscarA1 = (Integer) cmb_IDPedido2.getSelectedItem();
+                int buscarA1 = (Integer) cmb_IDAlbaran2.getSelectedItem();
 
                 Connection miConexion = (Connection) meConecto.ConectarMysql();
 
@@ -424,7 +424,7 @@ final class AlbaranC extends JFrame {
                     tablaBD2.setModel(modelo);
 
                     //Para ejecutar la consulta
-                    String query = "SELECT * FROM `linea_pedido_cli` WHERE `Id_pedido` = " + buscarA1 + " ORDER BY `Id_pedido` ASC";
+                    String query = "SELECT * FROM `linea_albaran_cli` WHERE `Id_albaran` = " + buscarA1 + " ORDER BY `Id_albaran` ASC";
                     Statement s = miConexion.createStatement();
 
                     //Almacenamos en un ResultSet
@@ -480,8 +480,8 @@ final class AlbaranC extends JFrame {
     public void ejecutarPedido_CLi() {
 
         cmb_IDAlbaran.removeAllItems();
-        cmb_IDPedido2.removeAllItems();
-        cmb_IDCliente2.removeAllItems();
+        cmb_IDAlbaran2.removeAllItems();
+        
 
         Connection miConexion = (Connection) meConecto.ConectarMysql();
 
@@ -513,7 +513,7 @@ final class AlbaranC extends JFrame {
                 Object[] fila = new Object[cantidadColumnas];
                 ultimoID_Pedido = rs.getInt("Id_albaran");
                 cmb_IDAlbaran.addItem(rs.getInt("Id_albaran"));
-                cmb_IDPedido2.addItem(rs.getInt("Id_albaran"));
+                cmb_IDAlbaran2.addItem(rs.getInt("Id_albaran"));
                 //cmb_IDCliente2.addItem(rs.getString("CIF_Cli"));
 
                 for (int i = 0; i < cantidadColumnas; i++) {
@@ -552,7 +552,7 @@ final class AlbaranC extends JFrame {
             //Creando las filas para el JTable
             while (rs.next()) {
                 cmb_IDPedido1.addItem(rs.getString("Id_pedido"));
-
+                
             }
             rs.close();
             miConexion.close();
@@ -637,16 +637,17 @@ final class AlbaranC extends JFrame {
 
     public void OtraConsulta() {
 
-        String buscarA2 = (String) cmb_IDCliente2.getSelectedItem();
+        String buscarA2 = ""+ cmb_IDAlbaran2.getSelectedItem();
         Date fecha1 = null;
         Date fecha2 = null;
+        String pedidoID = null;
 
         Connection miConexion2 = (Connection) meConecto.ConectarMysql();
 
         try (Statement st = miConexion2.createStatement()) {
 
             //Para ejecutar la consulta
-            String query = "SELECT * FROM `pedido_cli` WHERE `CIF_cli` LIKE '" + buscarA2 + "'";
+            String query = "SELECT * FROM `albaran_cli` WHERE `Id_albaran` = " + buscarA2 + "";
             Statement s = miConexion2.createStatement();
 
             //Almacenamos en un ResultSet
@@ -655,8 +656,9 @@ final class AlbaranC extends JFrame {
             //Obteniendo la informacion de las columnas que estan siendo consultadas
             ResultSetMetaData rsMd = rs.getMetaData();
             while (rs.next()) {
-                fecha1 = rs.getDate("Fecha_pedido");
+                fecha1 = rs.getDate("Fecha_envio");
                 fecha2 = rs.getDate("Fecha_llegada");
+                pedidoID = rs.getString("Id_pedido");
             }
             rs.close();
             miConexion2.close();
@@ -665,6 +667,7 @@ final class AlbaranC extends JFrame {
 
             txt_FechaPedido.setText(fecha.format(fecha1));
             txt_FechaEnvio.setText(fecha.format(fecha2));
+            txt_IDPedido2.setText(pedidoID);
 
         } catch (Exception ex) {
             ex.printStackTrace();
