@@ -258,7 +258,7 @@ public final class menuPrincipal extends JFrame {
                     PedidoC cliente = new PedidoC();
                 } else {
                     // Presiono Proveedor
-                    //PedidoP proveedor = new PedidoP();
+                    PedidoP proveedor = new PedidoP();
                 }
             }
         } catch (Exception err) {
