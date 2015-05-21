@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-final class AlbaranC extends JFrame {
+final class AlbaranP extends JFrame {
 
     private final JTabbedPane tabbedPane;
     private JPanel pestaña01, pestaña02, pestaña03;
@@ -24,9 +24,9 @@ final class AlbaranC extends JFrame {
     //Para poder conectarse a la base de datos
     private final conexionDB meConecto = new conexionDB();
 
-    public AlbaranC() {
+    public AlbaranP() {
 
-        setTitle("  -- Albaran Cliente -- ");
+        setTitle("  -- Albaran Proveedor -- ");
         setSize(450, 400);
         setResizable(false);
 
@@ -50,7 +50,7 @@ final class AlbaranC extends JFrame {
         tabbedPane.addTab("Mostrar Albaran", pestaña03);
         topPanel.add(tabbedPane, BorderLayout.CENTER);
 
-        ejecutarPedido_CLi();
+        ejecutarPedido_prov();
         ejecutarPedidos();
         ejecutarProductos();
         ejecutarLineasAlbaran();
@@ -178,7 +178,7 @@ final class AlbaranC extends JFrame {
                     try (Statement st = miConexion.createStatement()) {
 
                         //Para ejecutar la consulta
-                        String query = "INSERT INTO `almacentextil`.`albaran_cli` (`Id_albaran`, `Id_pedido`, `Fecha_envio`, `Fecha_llegada`) VALUES ('" + IDAlbaran + "', '" + IDPedido1 + "', '" + fechaEnvio + "', '" + fechaLlegada + "')";
+                        String query = "INSERT INTO `almacentextil`.`albaran_prov` (`Id_albaran`, `Id_pedido`, `Fecha_envio`, `Fecha_llegada`) VALUES ('" + IDAlbaran + "', '" + IDPedido1 + "', '" + fechaEnvio + "', '" + fechaLlegada + "')";
                         Statement s = miConexion.createStatement();
                         st.executeUpdate(query);
                         insertado = true;
@@ -188,7 +188,7 @@ final class AlbaranC extends JFrame {
                         if (insertado == true) {
                             JOptionPane.showMessageDialog(null, "Insertado Con Exito!", "Guardado", JOptionPane.INFORMATION_MESSAGE);
                             ejecutarPedidos();
-                            ejecutarPedido_CLi();
+                            ejecutarPedido_prov();
                             ejecutarProductos();
                             ejecutarLineasAlbaran();
                         }
@@ -270,7 +270,7 @@ final class AlbaranC extends JFrame {
                     try (Statement st = miConexion.createStatement()) {
 
                         //Para ejecutar la consulta
-                        String query = "DELETE FROM `linea_albaran_cli` WHERE `Id_albaran` = " + eliminarA1 + " and `Id_producto` = " + eliminarA2 + "";
+                        String query = "DELETE FROM `linea_albaran_prov` WHERE `Id_albaran` = " + eliminarA1 + " and `Id_producto` = " + eliminarA2 + "";
 
                         Statement s = miConexion.createStatement();
                         st.executeUpdate(query);
@@ -281,7 +281,7 @@ final class AlbaranC extends JFrame {
                         if (eliminado == true) {
                             JOptionPane.showMessageDialog(null, "Eliminado Con Exito!", "Eliminado", JOptionPane.INFORMATION_MESSAGE);
                             ejecutarPedidos();
-                            ejecutarPedido_CLi();
+                            ejecutarPedido_prov();
                             ejecutarProductos();
                             ejecutarLineasAlbaran();
                         }
@@ -334,7 +334,7 @@ final class AlbaranC extends JFrame {
                         try (Statement st = miConexion.createStatement()) {
 
                             //Para ejecutar la consulta
-                            String query = "INSERT INTO `almacentextil`.`linea_albaran_cli`(`Id_albaran`, `Id_linea`, `Id_producto`, `Cantidad`) VALUES ('" + IDalbaran + "', " + NULL + ", '" + IDProducto + "', '" + Cantidad + "')";
+                            String query = "INSERT INTO `almacentextil`.`linea_albaran_prov`(`Id_albaran`, `Id_linea`, `Id_producto`, `Cantidad`) VALUES ('" + IDalbaran + "', " + NULL + ", '" + IDProducto + "', '" + Cantidad + "')";
                             Statement s = miConexion.createStatement();
                             st.executeUpdate(query);
                             insertado = true;
@@ -344,7 +344,7 @@ final class AlbaranC extends JFrame {
                             if (insertado == true) {
                                 JOptionPane.showMessageDialog(null, "Insertado Con Exito!", "Guardado", JOptionPane.INFORMATION_MESSAGE);
                                 ejecutarPedidos();
-                                ejecutarPedido_CLi();
+                                ejecutarPedido_prov();
                                 ejecutarProductos();
                                 ejecutarLineasAlbaran();
                             }
@@ -373,9 +373,9 @@ final class AlbaranC extends JFrame {
         cmb_IDAlbaran2.setBounds(90, 25, 90, 20);
         pestaña03.add(cmb_IDAlbaran2);
 
-        JLabel lbl_idCli = new JLabel("Id Pedido:");
-        lbl_idCli.setBounds(200, 25, 90, 20);
-        pestaña03.add(lbl_idCli);
+        JLabel lbl_idprov = new JLabel("Id Pedido:");
+        lbl_idprov.setBounds(200, 25, 90, 20);
+        pestaña03.add(lbl_idprov);
 
         txt_IDPedido2 = new JTextField();
         txt_IDPedido2.setEditable(false);
@@ -390,11 +390,6 @@ final class AlbaranC extends JFrame {
         txt_FechaEnvio.setEditable(false);
         txt_FechaEnvio.setBounds(90, 65, 90, 20);
         pestaña03.add(txt_FechaEnvio);
-        
-        tablaBD3 = new JTable();
-        scroll3 = new JScrollPane(tablaBD3);
-        scroll3.setBounds(5, 125, 430, 170);
-        pestaña03.add(scroll3);
 
         JLabel lbl_FechaPedido = new JLabel("Fecha Pedido:");
         lbl_FechaPedido.setBounds(200, 65, 80, 20);
@@ -404,6 +399,11 @@ final class AlbaranC extends JFrame {
         txt_FechaPedido.setEditable(false);
         txt_FechaPedido.setBounds(290, 65, 90, 20);
         pestaña03.add(txt_FechaPedido);
+
+        tablaBD3 = new JTable();
+        scroll3 = new JScrollPane(tablaBD3);
+        scroll3.setBounds(5, 125, 430, 170);
+        pestaña03.add(scroll3);
 
         JButton btn_Buscar = new JButton("Buscar");
         btn_Buscar.setBounds(334, 5, 90, 20);
@@ -424,7 +424,7 @@ final class AlbaranC extends JFrame {
                     tablaBD3.setModel(modelo);
 
                     //Para ejecutar la consulta
-                    String query = "SELECT * FROM `linea_albaran_cli` WHERE `Id_albaran` = " + buscarA1 + " ORDER BY `Id_albaran` ASC";
+                    String query = "SELECT * FROM `linea_albaran_prov` WHERE `Id_albaran` = " + buscarA1 + " ORDER BY `Id_albaran` ASC";
                     Statement s = miConexion.createStatement();
 
                     //Almacenamos en un ResultSet
@@ -477,7 +477,7 @@ final class AlbaranC extends JFrame {
         }
     }
 
-    public void ejecutarPedido_CLi() {
+    public void ejecutarPedido_prov() {
 
         cmb_IDAlbaran.removeAllItems();
         cmb_IDAlbaran2.removeAllItems();
@@ -492,7 +492,7 @@ final class AlbaranC extends JFrame {
             tablaBD.setModel(modelo);
 
             //Nuestra sentencia SQL
-            String sentencia = "SELECT * FROM `albaran_cli`";
+            String sentencia = "SELECT * FROM `albaran_prov`";
             Statement s = miConexion.createStatement();
 
             //Almacenamos en un ResultSet
@@ -514,7 +514,7 @@ final class AlbaranC extends JFrame {
                 ultimoID_Pedido = rs.getInt("Id_albaran");
                 cmb_IDAlbaran.addItem(rs.getInt("Id_albaran"));
                 cmb_IDAlbaran2.addItem(rs.getInt("Id_albaran"));
-                //cmb_IDCliente2.addItem(rs.getString("CIF_Cli"));
+                //cmb_IDprovente2.addItem(rs.getString("CIF_prov"));
 
                 for (int i = 0; i < cantidadColumnas; i++) {
                     fila[i] = rs.getObject(i + 1);
@@ -532,7 +532,7 @@ final class AlbaranC extends JFrame {
         txt_IDAlbaran.setText(Integer.toString(ultimoID_Pedido));
     }
 
-    //Pilla el ide de los clientes y lo guarda en el combo (pestaña1)
+    //Pilla el ide de los proventes y lo guarda en el combo (pestaña1)
 
     public void ejecutarPedidos() {
 
@@ -543,7 +543,7 @@ final class AlbaranC extends JFrame {
         try (Statement st = miConexion.createStatement()) {
 
             //Nuestra sentencia SQL
-            String sentencia = "SELECT * FROM `pedido_cli`";
+            String sentencia = "SELECT * FROM `pedido_prov`";
             Statement s = miConexion.createStatement();
 
             //Almacenamos en un ResultSet
@@ -603,7 +603,7 @@ final class AlbaranC extends JFrame {
             tablaBD3.setModel(modelo);
 
             //Nuestra sentencia SQL
-            String sentencia = "SELECT * FROM `linea_albaran_cli` ORDER BY `Id_albaran` ASC";
+            String sentencia = "SELECT * FROM `linea_albaran_prov` ORDER BY `Id_albaran` ASC";
             Statement s = miConexion.createStatement();
 
             //Almacenamos en un ResultSet
@@ -648,7 +648,7 @@ final class AlbaranC extends JFrame {
         try (Statement st = miConexion2.createStatement()) {
 
             //Para ejecutar la consulta
-            String query = "SELECT * FROM `albaran_cli` WHERE `Id_albaran` = " + buscarA2 + "";
+            String query = "SELECT * FROM `albaran_prov` WHERE `Id_albaran` = " + buscarA2 + "";
             Statement s = miConexion2.createStatement();
 
             //Almacenamos en un ResultSet

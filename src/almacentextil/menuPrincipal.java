@@ -231,7 +231,7 @@ public final class menuPrincipal extends JFrame {
                     AlbaranC cliente = new AlbaranC();
                 } else {
                     // Presiono Proveedor
-                    //AlabaranP proveedor = new AlbaranP();
+                    AlbaranP proveedor = new AlbaranP();
                 }
             }
         } catch (Exception err) {
