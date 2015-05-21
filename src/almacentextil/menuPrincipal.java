@@ -35,7 +35,6 @@ public final class menuPrincipal extends JFrame {
         this.getContentPane().setBackground(Color.orange);
 
         //Color JPanel
-        
         btn_fact = new javax.swing.JButton();
         btn_alb = new javax.swing.JButton();
         btn_ped = new javax.swing.JButton();
@@ -201,10 +200,10 @@ public final class menuPrincipal extends JFrame {
 
             if (seleccion != -1) {
                 if ((seleccion + 1) == 1) {
-                    // Presiono Cliente
+                    //Presiono Cliente
                     FacturaC cliente = new FacturaC();
                 } else {
-                    // Presiono Proveedor
+                    //Presiono Proveedor
                     //FacturaP proveedor = new FacturaP();
                 }
             }
