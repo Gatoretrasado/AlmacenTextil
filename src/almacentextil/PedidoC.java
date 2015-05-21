@@ -3,6 +3,8 @@ package almacentextil;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -14,8 +16,8 @@ final class PedidoC extends JFrame {
     private String[] DIAS;
     final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
     private int ultimoID_Pedido;
-    private JTextField txt_IDPedido;
-    private JComboBox cmb_IDCliente, cmb_IDPedido, cmb_IDProd;
+    private JTextField txt_IDPedido, txt_FechaPedido, txt_FechaEnvio;
+    private JComboBox cmb_IDCliente, cmb_IDPedido, cmb_IDProd, cmb_IDCliente2, cmb_IDPedido2;
     private JScrollPane scroll, scroll2;
     private JTable tablaBD, tablaBD2;
 
@@ -461,87 +463,92 @@ final class PedidoC extends JFrame {
         lbl_idP.setBounds(10, 25, 68, 22);
         pestaña03.add(lbl_idP);
 
-        JComboBox cmb_idP = new JComboBox();
-        cmb_idP.setBounds(90, 25, 90, 20);
-        pestaña03.add(cmb_idP);
+        cmb_IDPedido2 = new JComboBox();
+        cmb_IDPedido2.setBounds(90, 25, 90, 20);
+        pestaña03.add(cmb_IDPedido2);
 
         JLabel lbl_idCli = new JLabel("Id Cliente:");
         lbl_idCli.setBounds(200, 25, 90, 20);
         pestaña03.add(lbl_idCli);
 
-        JTextField txt_idCli = new JTextField();
-        txt_idCli.setEditable(false);
-        txt_idCli.setBounds(275, 25, 90, 20);
-        pestaña03.add(txt_idCli);
+        cmb_IDCliente2 = new JComboBox();
+        cmb_IDCliente2.setEditable(false);
+        cmb_IDCliente2.setBounds(275, 25, 90, 20);
+        pestaña03.add(cmb_IDCliente2);
 
-        JLabel lbl_Envio = new JLabel("Fecha Envio:");
-        lbl_Envio.setBounds(10, 65, 80, 20);
-        pestaña03.add(lbl_Envio);
+        JLabel lbl_FechaEnvio = new JLabel("Fecha Envio:");
+        lbl_FechaEnvio.setBounds(10, 65, 80, 20);
+        pestaña03.add(lbl_FechaEnvio);
 
-        JTextField txt_Envio = new JTextField();
-        txt_Envio.setEditable(false);
-        txt_Envio.setBounds(90, 65, 90, 20);
-        pestaña03.add(txt_Envio);
+        txt_FechaEnvio = new JTextField();
+        txt_FechaEnvio.setEditable(false);
+        txt_FechaEnvio.setBounds(90, 65, 90, 20);
+        pestaña03.add(txt_FechaEnvio);
 
-        JLabel lbl_Pedido = new JLabel("Fecha Pedido:");
-        lbl_Pedido.setBounds(200, 65, 80, 20);
-        pestaña03.add(lbl_Pedido);
+        JLabel lbl_FechaPedido = new JLabel("Fecha Pedido:");
+        lbl_FechaPedido.setBounds(200, 65, 80, 20);
+        pestaña03.add(lbl_FechaPedido);
 
-        JTextField txt_Pedido = new JTextField();
-        txt_Pedido.setEditable(false);
-        txt_Pedido.setBounds(285, 65, 90, 20);
-        pestaña03.add(txt_Pedido);
+        txt_FechaPedido = new JTextField();
+        txt_FechaPedido.setEditable(false);
+        txt_FechaPedido.setBounds(290, 65, 90, 20);
+        pestaña03.add(txt_FechaPedido);
 
-        JButton btnBuscar = new JButton("Buscar");
-        btnBuscar.setBounds(334, 5, 90, 20);
-        pestaña03.add(btnBuscar);
+        tablaBD2 = new JTable();
+        scroll2 = new JScrollPane(tablaBD2);
+        scroll2.setBounds(5, 125, 430, 170);
+        pestaña03.add(scroll2);
 
-        btnBuscar.addActionListener(new ActionListener() {
+        JButton btn_Buscar = new JButton("Buscar");
+        btn_Buscar.setBounds(334, 5, 90, 20);
+        pestaña03.add(btn_Buscar);
+
+        btn_Buscar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                try {
-                    // int id = (Integer) spnID.getValue();
 
-                    try {
+                int buscarA1 = (Integer) cmb_IDPedido2.getSelectedItem();
 
-                        System.out.println("----- Empezamos");
+                Connection miConexion = (Connection) meConecto.ConectarMysql();
 
-                        //Paso01 Cargamos los drivers
-                        DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+                try (Statement st = miConexion.createStatement()) {
 
-                        //Paso02 Creamos el Objeto para la conexion 
-                        Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "damlocal", "case");
-                        System.out.println(" Parece ser que nos hemos conectado");
+                    //Para establecer el modelo al JTable
+                    DefaultTableModel modelo = new DefaultTableModel();
+                    tablaBD2.setModel(modelo);
 
-                        //Paso03 Creamos el objeto para la sentencia  
-                        PreparedStatement prst = con.prepareStatement("select * from pedido");
+                    //Para ejecutar la consulta
+                    String query = "SELECT * FROM `linea_pedido_cli` WHERE `Id_pedido` = " + buscarA1 + " ORDER BY `Id_pedido` ASC";
+                    Statement s = miConexion.createStatement();
 
-                        //Paso04 Ejecutamos la sentencia
-                        ResultSet rsst = prst.executeQuery();
-                        System.out.println("la sentencia es: " + rsst);
-                        System.out.println("---- Ejecutmamos la sentencia");
+                    //Almacenamos en un ResultSet
+                    ResultSet rs = s.executeQuery(query);
 
-                        while (rsst.next()) {
-                            for (int i = 1; i <= 5; i++) {
-                                System.out.print(rsst.getString(i) + '\t');
-                            }
-                            System.out.println();
-                            System.out.println("Estamos en la fila  :" + rsst.getRow());
-                        }
+                    //Obteniendo la informacion de las columnas que estan siendo consultadas
+                    ResultSetMetaData rsMd = rs.getMetaData();
 
-                        //Paso05 Cerramos la Conexion  
-                        con.close();
-                        System.out.println("---Cerramos la conexion");
+                    //La cantidad de columnas que tiene la consulta
+                    int cantidadColumnas = rsMd.getColumnCount();
 
-                    } catch (SQLException sqle) {
-                        System.out.println();
-                        System.out.println(" Parece ser que nos hemos fallado");
-                        sqle.printStackTrace();
-                        System.out.println(sqle.getErrorCode() + " - " + sqle.getMessage());
+                    //Establecer como cabezeras el nombre de las colimnas
+                    for (int i = 1; i <= cantidadColumnas; i++) {
+                        modelo.addColumn(rsMd.getColumnLabel(i));
                     }
-                } catch (Exception err) {
-                    System.out.println("Error 02");
+                    //Creando las filas para el JTable
+                    while (rs.next()) {
+                        Object[] fila = new Object[cantidadColumnas];
+                        for (int i = 0; i < cantidadColumnas; i++) {
+                            fila[i] = rs.getObject(i + 1);
+                        }
+                        modelo.addRow(fila);
+                    }
+                    rs.close();
+                    miConexion.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+                
+                OtraConsulta();
             }
         });
     }
@@ -567,6 +574,8 @@ final class PedidoC extends JFrame {
     public void ejecutarPedido_CLi() {
 
         cmb_IDPedido.removeAllItems();
+        cmb_IDPedido2.removeAllItems();
+        cmb_IDCliente2.removeAllItems();
 
         Connection miConexion = (Connection) meConecto.ConectarMysql();
 
@@ -598,6 +607,8 @@ final class PedidoC extends JFrame {
                 Object[] fila = new Object[cantidadColumnas];
                 ultimoID_Pedido = rs.getInt("Id_pedido");
                 cmb_IDPedido.addItem(rs.getInt("Id_pedido"));
+                cmb_IDPedido2.addItem(rs.getInt("Id_pedido"));
+                cmb_IDCliente2.addItem(rs.getString("CIF_Cli"));
 
                 for (int i = 0; i < cantidadColumnas; i++) {
                     fila[i] = rs.getObject(i + 1);
@@ -618,6 +629,7 @@ final class PedidoC extends JFrame {
     public void ejecutarClientes() {
 
         cmb_IDCliente.removeAllItems();
+        
         Connection miConexion = (Connection) meConecto.ConectarMysql();
 
         try (Statement st = miConexion.createStatement()) {
@@ -632,6 +644,7 @@ final class PedidoC extends JFrame {
             //Creando las filas para el JTable
             while (rs.next()) {
                 cmb_IDCliente.addItem(rs.getString("CIF_Cli"));
+                
             }
             rs.close();
             miConexion.close();
@@ -710,5 +723,42 @@ final class PedidoC extends JFrame {
             System.err.println("Se ha producido un Error! ");
             System.err.println(e.getMessage());
         }
+    }
+
+    public void OtraConsulta() {
+
+        String buscarA2 = (String) cmb_IDCliente2.getSelectedItem();
+        Date fecha1 = null;
+        Date fecha2 = null;
+
+        Connection miConexion2 = (Connection) meConecto.ConectarMysql();
+
+        try (Statement st = miConexion2.createStatement()) {
+
+            //Para ejecutar la consulta
+            String query = "SELECT * FROM `pedido_cli` WHERE `CIF_cli` LIKE '" + buscarA2 + "'";
+            Statement s = miConexion2.createStatement();
+
+            //Almacenamos en un ResultSet
+            ResultSet rs = s.executeQuery(query);
+
+            //Obteniendo la informacion de las columnas que estan siendo consultadas
+            ResultSetMetaData rsMd = rs.getMetaData();
+            while (rs.next()) {
+                fecha1 = rs.getDate("Fecha_pedido");
+                fecha2 = rs.getDate("Fecha_llegada");
+            }
+            rs.close();
+            miConexion2.close();
+
+            DateFormat fecha = new SimpleDateFormat("yyyy/MM/dd");
+
+            txt_FechaPedido.setText(fecha.format(fecha1));
+            txt_FechaEnvio.setText(fecha.format(fecha2));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 }
