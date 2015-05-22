@@ -27,7 +27,7 @@ public final class FacturaP extends JFrame {
 
     public FacturaP() {
 
-        setTitle(" -- Facturas Cliente -- ");
+        setTitle(" -- Facturas Proveedores -- ");
         setSize(450, 400);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -49,8 +49,8 @@ public final class FacturaP extends JFrame {
         pestañas.addTab("Mostrar", pestaña03);
         topPanel.add(pestañas, BorderLayout.CENTER);
 
-        ejecutarLineaPedido_Cli();
-        ejecutarFactura_Cli();
+        ejecutarLineaPedido_Prov();
+        ejecutarFactura_Prov();
 
         setVisible(true);
     }
@@ -201,7 +201,7 @@ public final class FacturaP extends JFrame {
                         try (Statement st = miConexion.createStatement()) {
 
                             //Para ejecutar la consulta
-                            String query = "INSERT INTO `almacentextil`.`factura_cli` (`Id_factura`, `Id_pedido`, `Fecha_factura`, `Total_sin_IVA`, `DTO`, `Total_con_IVA`) VALUES(" + NULL + ", '" + idPedido + "', '" + fecha + "', '" + totalSin + "', '" + descuento + "', '" + totalCon + "')";
+                            String query = "INSERT INTO `almacentextil`.`factura_prov` (`Id_factura`, `Id_pedido`, `Fecha_factura`, `Total_sin_IVA`, `DTO`, `Total_con_IVA`) VALUES(" + NULL + ", '" + idPedido + "', '" + fecha + "', '" + totalSin + "', '" + descuento + "', '" + totalCon + "')";
 
                             Statement s = miConexion.createStatement();
                             st.executeUpdate(query);
@@ -211,8 +211,8 @@ public final class FacturaP extends JFrame {
 
                             if (insertado == true) {
                                 JOptionPane.showMessageDialog(null, "Insertado Con Exito!", "Guardado", JOptionPane.INFORMATION_MESSAGE);
-                                ejecutarLineaPedido_Cli();
-                                ejecutarFactura_Cli();
+                                ejecutarLineaPedido_Prov();
+                                ejecutarFactura_Prov();
                             }
 
                         } catch (Exception ex) {
@@ -345,7 +345,7 @@ public final class FacturaP extends JFrame {
                         try (Statement st = miConexion.createStatement()) {
 
                             //Para ejecutar la consulta
-                            String query = "UPDATE `almacentextil`.`factura_cli` SET `DTO` = '" + Descuento + "', `Total_con_IVA` = '" + TOTAL + "' WHERE `factura_cli`.`Id_factura` = " + IDFactura + "";
+                            String query = "UPDATE `almacentextil`.`factura_prov` SET `DTO` = '" + Descuento + "', `Total_con_IVA` = '" + TOTAL + "' WHERE `factura_prov`.`Id_factura` = " + IDFactura + "";
 
                             Statement s = miConexion.createStatement();
                             st.executeUpdate(query);
@@ -355,8 +355,8 @@ public final class FacturaP extends JFrame {
 
                             if (insertado == true) {
                                 JOptionPane.showMessageDialog(null, "Insertado Con Exito!", "Guardado", JOptionPane.INFORMATION_MESSAGE);
-                                ejecutarLineaPedido_Cli();
-                                ejecutarFactura_Cli();
+                                ejecutarLineaPedido_Prov();
+                                ejecutarFactura_Prov();
                             }
 
                         } catch (Exception ex) {
@@ -408,7 +408,7 @@ public final class FacturaP extends JFrame {
                     tablaBD.setModel(modelo);
                     
                     //Nuestra sentencia SQL
-                    String sentencia = "SELECT * FROM `factura_cli` WHERE `Id_factura` = '" + bucarF + "'";
+                    String sentencia = "SELECT * FROM `factura_prov` WHERE `Id_factura` = '" + bucarF + "'";
                     Statement s = miConexion.createStatement();
 
                     //Almacenamos en un ResultSet
@@ -470,7 +470,7 @@ public final class FacturaP extends JFrame {
         return formateador.format(ahora);
     }
 
-    public void ejecutarFactura_Cli() {
+    public void ejecutarFactura_Prov() {
 
         cmb_IDFactura.removeAllItems();
 
@@ -483,7 +483,7 @@ public final class FacturaP extends JFrame {
             tablaBD.setModel(modelo);
 
             //Nuestra sentencia SQL
-            String sentencia = "SELECT * FROM `factura_cli`";
+            String sentencia = "SELECT * FROM `factura_prov`";
             Statement s = miConexion.createStatement();
 
             //Almacenamos en un ResultSet
@@ -523,7 +523,7 @@ public final class FacturaP extends JFrame {
         txt_IDFactura.setText(Integer.toString(ultimoID));
     }
 
-    public void ejecutarLineaPedido_Cli() {
+    public void ejecutarLineaPedido_Prov() {
 
         cmb_IDPedido.removeAllItems();
         IDs.clear();
@@ -533,7 +533,7 @@ public final class FacturaP extends JFrame {
         try (Statement st = miConexion.createStatement()) {
 
             //Nuestra sentencia SQL
-            String sentencia = "SELECT * FROM `linea_pedido_cli` ORDER BY `Id_pedido` ASC";
+            String sentencia = "SELECT * FROM `linea_pedido_prov` ORDER BY `Id_pedido` ASC";
             Statement s = miConexion.createStatement();
 
             //Almacenamos en un ResultSet
@@ -569,7 +569,7 @@ public final class FacturaP extends JFrame {
         try (Statement st = miConexion.createStatement()) {
 
             //Nuestra sentencia SQL
-            String sentencia = "SELECT * FROM `linea_pedido_cli` WHERE `Id_pedido` ='" + bucarA + "'";
+            String sentencia = "SELECT * FROM `linea_pedido_prov` WHERE `Id_pedido` ='" + bucarA + "'";
             Statement s = miConexion.createStatement();
 
             //Almacenamos en un ResultSet
@@ -605,7 +605,7 @@ public final class FacturaP extends JFrame {
         try (Statement st = miConexion.createStatement()) {
 
             //Nuestra sentencia SQL
-            String sentencia = "SELECT * FROM `factura_cli` WHERE `Id_factura` = '" + bucarC + "'";
+            String sentencia = "SELECT * FROM `factura_prov` WHERE `Id_factura` = '" + bucarC + "'";
             Statement s = miConexion.createStatement();
 
             //Almacenamos en un ResultSet
