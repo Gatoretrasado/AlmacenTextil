@@ -204,7 +204,7 @@ public final class menuPrincipal extends JFrame {
                     FacturaC cliente = new FacturaC();
                 } else {
                     //Presiono Proveedor
-                    //FacturaP proveedor = new FacturaP();
+                    FacturaP proveedor = new FacturaP();
                 }
             }
         } catch (Exception err) {
