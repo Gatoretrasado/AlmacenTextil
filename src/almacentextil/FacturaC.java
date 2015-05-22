@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.swing.table.DefaultTableModel;
 
 public final class FacturaC extends JFrame {
 
@@ -17,7 +18,9 @@ public final class FacturaC extends JFrame {
     private JPanel pestaña01, pestaña02, pestaña03;
     private JTextField txt_IDFactura, txt_TotalnoIVA, txt_IDPedido, txt_fechaFactura, txt_TotalSIN, txt_Descuento, txt_TotalCON;
     private int ultimoID, precioNoIVA = 0;
-    private JComboBox cmb_IDPedido, cmb_IDFactura;
+    private JComboBox cmb_IDPedido, cmb_IDFactura, cmb_IDFactura3;
+    private JTable tablaBD;
+    private JScrollPane scroll;
 
     //Para poder conectarse a la base de datos
     private final conexionDB meConecto = new conexionDB();
@@ -332,18 +335,17 @@ public final class FacturaC extends JFrame {
                     int IDFactura = (int) cmb_IDFactura.getSelectedItem();
                     int Descuento = Integer.parseInt(txt_Descuento.getText());
                     int TOTAL = Integer.parseInt(txt_TotalCON.getText());
-                    
-                    
-                    if ((txt_Descuento.getText().equalsIgnoreCase(""))){
+
+                    if ((txt_Descuento.getText().equalsIgnoreCase(""))) {
                         JOptionPane.showMessageDialog(null, "Descuento Vacio", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        
+
                         Connection miConexion = (Connection) meConecto.ConectarMysql();
 
                         try (Statement st = miConexion.createStatement()) {
 
                             //Para ejecutar la consulta
-                            String query = "UPDATE `almacentextil`.`factura_cli` SET `DTO` = '"+Descuento+"', `Total_con_IVA` = '"+TOTAL+"' WHERE `factura_cli`.`Id_factura` = "+IDFactura+"";
+                            String query = "UPDATE `almacentextil`.`factura_cli` SET `DTO` = '" + Descuento + "', `Total_con_IVA` = '" + TOTAL + "' WHERE `factura_cli`.`Id_factura` = " + IDFactura + "";
 
                             Statement s = miConexion.createStatement();
                             st.executeUpdate(query);
@@ -375,72 +377,69 @@ public final class FacturaC extends JFrame {
         pestaña03 = new JPanel();
         pestaña03.setLayout(null);
 
-        JTextArea area = new JTextArea();
-        JScrollPane areaLista = new JScrollPane(area);
-        areaLista.setBounds(5, 35, 420, 250);
-        area.setEditable(false);
-        pestaña03.add(areaLista);
+        JLabel lbl_IDFactura = new JLabel("ID: ");
+        pestaña03.add(lbl_IDFactura);
 
-        JButton btn_Volver = new JButton("Volver");
-        btn_Volver.setBounds(334, 5, 90, 20);
-        pestaña03.add(btn_Volver);
+        cmb_IDFactura3 = new JComboBox();
+        cmb_IDFactura3.setBounds(15, 5, 50, 25);
+        pestaña03.add(cmb_IDFactura3);
+
+        tablaBD = new JTable();
+        scroll = new JScrollPane(tablaBD);
+        scroll.setBounds(5, 35, 420, 250);
+        pestaña03.add(scroll);
 
         JButton btn_Buscar = new JButton("Buscar");
         btn_Buscar.setBounds(235, 5, 90, 20);
         pestaña03.add(btn_Buscar);
 
-        JComboBox cmbox_ID = new JComboBox();
-        cmbox_ID.setBounds(15, 5, 50, 25);
-        pestaña03.add(cmbox_ID);
-
-        JLabel lblID = new JLabel("ID: ");
-        pestaña03.add(lblID);
-
         btn_Buscar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                try {
-                    int id = (Integer) cmbox_ID.getSelectedItem();
+                
+                int bucarF = (int) cmb_IDFactura3.getSelectedItem();
+                
+                Connection miConexion = (Connection) meConecto.ConectarMysql();
 
-                    try {
+                try (Statement st = miConexion.createStatement()) {
+                    
+                    //Para establecer el modelo al JTable
+                    DefaultTableModel modelo = new DefaultTableModel();
+                    tablaBD.setModel(modelo);
+                    
+                    //Nuestra sentencia SQL
+                    String sentencia = "SELECT * FROM `factura_cli` WHERE `Id_factura` = '" + bucarF + "'";
+                    Statement s = miConexion.createStatement();
 
-                        System.out.println("----- Empezamos");
+                    //Almacenamos en un ResultSet
+                    ResultSet rs = s.executeQuery(sentencia);
+                    
+                    //Obteniendo la informacion de las columnas que estan siendo consultadas
+                    ResultSetMetaData rsMd = rs.getMetaData();
 
-                        //Paso01 Cargamos los drivers
-                        DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+                    //La cantidad de columnas que tiene la consulta
+                    int cantidadColumnas = rsMd.getColumnCount();
 
-                        //Paso02 Creamos el Objeto para la conexion 
-                        Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "damlocal", "case");
-                        System.out.println(" Parece ser que nos hemos conectado");
-
-                        //Paso03 Creamos el objeto para la sentencia  
-                        PreparedStatement prst = con.prepareStatement("select * from factura");
-
-                        //Paso04 Ejecutamos la sentencia
-                        ResultSet rsst = prst.executeQuery();
-                        System.out.println("la sentencia es: " + rsst);
-                        System.out.println("---- Ejecutmamos la sentencia");
-
-                        while (rsst.next()) {
-                            for (int i = 1; i <= 6; i++) {
-                                System.out.print(rsst.getString(i) + '\t');
-                            }
-                            System.out.println();
-                            System.out.println("Estamos en la fila  :" + rsst.getRow());
-                        }
-
-                        //Paso05 Cerramos la Conexion  
-                        con.close();
-                        System.out.println("---Cerramos la conexion");
-
-                    } catch (SQLException sqle) {
-                        System.out.println();
-                        System.out.println(" Parece ser que nos hemos fallado");
-                        sqle.printStackTrace();
-                        System.out.println(sqle.getErrorCode() + " - " + sqle.getMessage());
+                    //Establecer como cabezeras el nombre de las colimnas
+                    for (int i = 1; i <= cantidadColumnas; i++) {
+                        modelo.addColumn(rsMd.getColumnLabel(i));
                     }
-                } catch (Exception err) {
-                    System.out.println("Error 02");
+                    
+                    //Creando las filas para el JTable
+                    while (rs.next()) {
+                        
+                        Object[] fila = new Object[cantidadColumnas];
+                        for (int i = 0; i < cantidadColumnas; i++) {
+                            fila[i] = rs.getObject(i + 1);
+                        }
+                        modelo.addRow(fila);
+                    }
+                    rs.close();
+                    miConexion.close();
+
+                } catch (SQLException e) {
+                    System.err.println("Se ha producido un Error!: " + e);
+                    System.err.println(e.getMessage());
                 }
             }
         });
@@ -479,6 +478,10 @@ public final class FacturaC extends JFrame {
 
         try (Statement st = miConexion.createStatement()) {
 
+            //Para establecer el modelo al JTable
+            DefaultTableModel modelo = new DefaultTableModel();
+            tablaBD.setModel(modelo);
+
             //Nuestra sentencia SQL
             String sentencia = "SELECT * FROM `factura_cli`";
             Statement s = miConexion.createStatement();
@@ -486,10 +489,28 @@ public final class FacturaC extends JFrame {
             //Almacenamos en un ResultSet
             ResultSet rs = s.executeQuery(sentencia);
 
+            //Obteniendo la informacion de las columnas que estan siendo consultadas
+            ResultSetMetaData rsMd = rs.getMetaData();
+
+            //La cantidad de columnas que tiene la consulta
+            int cantidadColumnas = rsMd.getColumnCount();
+
+            //Establecer como cabezeras el nombre de las colimnas
+            for (int i = 1; i <= cantidadColumnas; i++) {
+                modelo.addColumn(rsMd.getColumnLabel(i));
+            }
+
             //Creando las filas para el JTable
             while (rs.next()) {
+                Object[] fila = new Object[cantidadColumnas];
                 ultimoID = rs.getInt("Id_factura");
                 cmb_IDFactura.addItem(rs.getInt("Id_factura"));
+                cmb_IDFactura3.addItem(rs.getInt("Id_factura"));
+
+                for (int i = 0; i < cantidadColumnas; i++) {
+                    fila[i] = rs.getObject(i + 1);
+                }
+                modelo.addRow(fila);
             }
             rs.close();
             miConexion.close();
