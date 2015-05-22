@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.sql.*;
+import java.text.DateFormat;
 import javax.swing.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,18 +15,16 @@ public final class FacturaC extends JFrame {
     private ArrayList<Integer> IDs = new ArrayList<>();
     private final JTabbedPane pestañas;
     private JPanel pestaña01, pestaña02, pestaña03;
-    private String[] AÑOS, DIAS;
-    private JTextField txt_IDFactura, txt_TotalnoIVA;
+    private JTextField txt_IDFactura, txt_TotalnoIVA, txt_IDPedido, txt_fechaFactura, txt_TotalSIN, txt_Descuento, txt_TotalCON;
     private int ultimoID, precioNoIVA = 0;
-    final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
-    private JComboBox cmb_IDPedido;
+    private JComboBox cmb_IDPedido, cmb_IDFactura;
 
     //Para poder conectarse a la base de datos
     private final conexionDB meConecto = new conexionDB();
 
     public FacturaC() {
 
-        setTitle(" -- Facturas -- ");
+        setTitle(" -- Facturas Cliente -- ");
         setSize(450, 400);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -34,8 +33,6 @@ public final class FacturaC extends JFrame {
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
         getContentPane().add(topPanel);
-
-        cargarFechas();
 
         //Creamos el contenido de cada pestaña
         crearPestaña01();
@@ -221,7 +218,7 @@ public final class FacturaC extends JFrame {
                             insertado = false;
                         }
 
-                        //imprimir(nFactura, idPedido, fecha, totalSin, descuento, totalCon);
+                        imprimir(nFactura, idPedido, fecha, totalSin, descuento, totalCon);
                     }
 
                 } catch (Exception err) {
@@ -239,77 +236,133 @@ public final class FacturaC extends JFrame {
         lbl_idFac.setBounds(10, 15, 80, 20);
         pestaña02.add(lbl_idFac);
 
-        JComboBox cmb_idFac = new JComboBox();
-        cmb_idFac.setBounds(100, 15, 150, 20);
+        cmb_IDFactura = new JComboBox();
+        cmb_IDFactura.setBounds(100, 15, 150, 20);
+        cmb_IDFactura.addActionListener(new ActionListener() { // Accion a realizar cuando el JComboBox cambia de item seleccionado.
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Busqueda2();
+            }
+        });
+        pestaña02.add(cmb_IDFactura);
 
-        pestaña02.add(cmb_idFac);
+        JLabel lbl_IDPedido = new JLabel("ID Pedido:");
+        lbl_IDPedido.setBounds(10, 60, 80, 20);
+        pestaña02.add(lbl_IDPedido);
 
-        JLabel lbl_idPed = new JLabel("ID Pedido:");
-        lbl_idPed.setBounds(10, 60, 80, 20);
-        pestaña02.add(lbl_idPed);
-
-        JComboBox cmb_idPed = new JComboBox();
-        cmb_idPed.setBounds(100, 60, 150, 20);
-        pestaña02.add(cmb_idPed);
+        txt_IDPedido = new JTextField();
+        txt_IDPedido.setBounds(100, 60, 150, 20);
+        txt_IDPedido.setEditable(false);
+        pestaña02.add(txt_IDPedido);
 
         JLabel lbl_fechaFac = new JLabel("Fecha Factura:");
-        lbl_fechaFac.setBounds(10, 105, 80, 20);
+        lbl_fechaFac.setBounds(10, 105, 110, 20);
         pestaña02.add(lbl_fechaFac);
 
-        JComboBox cmboxDias = new JComboBox(DIAS);
-        cmboxDias.setBounds(100, 105, 40, 20);
-        cmboxDias.setSelectedIndex(1);
-        pestaña02.add(cmboxDias);
+        txt_fechaFactura = new JTextField();
+        txt_fechaFactura.setBounds(115, 105, 100, 20);
+        txt_fechaFactura.setEditable(false);
+        pestaña02.add(txt_fechaFactura);
 
-        JComboBox cmboxMeses = new JComboBox(MESES);
-        cmboxMeses.setBounds(150, 105, 85, 20);
-        pestaña02.add(cmboxMeses);
+        JLabel lbl_TotalSIN = new JLabel("Total sin IVA:");
+        lbl_TotalSIN.setBounds(10, 155, 80, 20);
+        pestaña02.add(lbl_TotalSIN);
 
-        JComboBox cmboxYear = new JComboBox(AÑOS);
-        cmboxYear.setBounds(250, 105, 80, 20);
-        pestaña02.add(cmboxYear);
+        txt_TotalSIN = new JTextField();
+        txt_TotalSIN.setBounds(100, 155, 150, 20);
+        txt_TotalSIN.setEditable(false);
+        pestaña02.add(txt_TotalSIN);
 
-        JLabel lbl_totSin = new JLabel("Total sin IVA:");
-        lbl_totSin.setBounds(10, 155, 80, 20);
-        pestaña02.add(lbl_totSin);
+        JLabel lbl_Descuento = new JLabel("Descuento:");
+        lbl_Descuento.setBounds(10, 200, 80, 20);
+        pestaña02.add(lbl_Descuento);
 
-        JTextField txt_totSin = new JTextField();
-        txt_totSin.setBounds(100, 155, 150, 20);
-        pestaña02.add(txt_totSin);
+        txt_Descuento = new JTextField();
+        txt_Descuento.setBounds(100, 200, 150, 20);
+        pestaña02.add(txt_Descuento);
 
-        JLabel lbl_desc = new JLabel("Descuento:");
-        lbl_desc.setBounds(10, 200, 80, 20);
-        pestaña02.add(lbl_desc);
+        JLabel lbl_TotalCON = new JLabel("Total con IVA:");
+        lbl_TotalCON.setBounds(10, 255, 80, 20);
+        pestaña02.add(lbl_TotalCON);
 
-        JTextField txt_desc = new JTextField();
-        txt_desc.setBounds(100, 200, 150, 20);
-        pestaña02.add(txt_desc);
+        txt_TotalCON = new JTextField();
+        txt_TotalCON.setEditable(false);
+        txt_TotalCON.setBounds(100, 255, 150, 20);
+        pestaña02.add(txt_TotalCON);
 
-        JLabel lbl_totCon = new JLabel("Total con IVA:");
-        lbl_totCon.setBounds(10, 255, 80, 20);
-        pestaña02.add(lbl_totCon);
+        JButton btn_Aceptar = new JButton("Aceptar");
+        btn_Aceptar.setBounds(200, 300, 90, 27);
+        pestaña02.add(btn_Aceptar);
 
-        JTextField txt_totCon = new JTextField();
-        txt_totCon.setEditable(false);
-        txt_totCon.setBounds(100, 255, 150, 20);
-        pestaña02.add(txt_totCon);
+        JButton btn_Recalcular = new JButton("Calc");
+        btn_Recalcular.setBounds(300, 300, 90, 27);
+        pestaña02.add(btn_Recalcular);
 
-        JButton btnBuscar = new JButton("Buscar");
-        btnBuscar.setBounds(334, 10, 90, 25);
-        pestaña02.add(btnBuscar);
-
-        JButton btn_acept = new JButton("Aceptar");
-        btn_acept.setBounds(200, 300, 90, 27);
-        pestaña02.add(btn_acept);
-        JButton btn_limp = new JButton("Limpiar");
-        btn_limp.setBounds(300, 300, 90, 27);
-        pestaña02.add(btn_limp);
-
-        btn_acept.addActionListener(new ActionListener() {
+        btn_Recalcular.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 try {
+                    float precioIVA = 0;
+                    float precioSinIVA = Float.parseFloat(txt_TotalSIN.getText());
+                    float descuento;
 
+                    if (txt_Descuento.getText().equalsIgnoreCase("")) {
+
+                        txt_Descuento.setText("0");
+                        descuento = 0;
+                        precioIVA = (int) ((precioSinIVA - (precioSinIVA * (descuento / 100))) * 1.21);
+                        txt_TotalCON.setText(Integer.toString((int) precioIVA));
+
+                    } else {
+                        descuento = Float.parseFloat(txt_Descuento.getText());
+                        precioIVA = (int) ((precioSinIVA - (precioSinIVA * (descuento / 100))) * 1.21);
+                        txt_TotalCON.setText(Integer.toString((int) precioIVA));
+                    }
+                } catch (Exception err) {
+                    System.out.println(err);
+                }
+            }
+        });
+
+        btn_Aceptar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    boolean insertado = false;
+                    int IDFactura = (int) cmb_IDFactura.getSelectedItem();
+                    int Descuento = Integer.parseInt(txt_Descuento.getText());
+                    int TOTAL = Integer.parseInt(txt_TotalCON.getText());
+                    
+                    
+                    if ((txt_Descuento.getText().equalsIgnoreCase(""))){
+                        JOptionPane.showMessageDialog(null, "Descuento Vacio", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        
+                        Connection miConexion = (Connection) meConecto.ConectarMysql();
+
+                        try (Statement st = miConexion.createStatement()) {
+
+                            //Para ejecutar la consulta
+                            String query = "UPDATE `almacentextil`.`factura_cli` SET `DTO` = '"+Descuento+"', `Total_con_IVA` = '"+TOTAL+"' WHERE `factura_cli`.`Id_factura` = "+IDFactura+"";
+
+                            Statement s = miConexion.createStatement();
+                            st.executeUpdate(query);
+                            insertado = true;
+
+                            miConexion.close();
+
+                            if (insertado == true) {
+                                JOptionPane.showMessageDialog(null, "Insertado Con Exito!", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+                                ejecutarLineaPedido_Cli();
+                                ejecutarFactura_Cli();
+                            }
+
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(null, "Se ha producido un Error", "Error", JOptionPane.ERROR_MESSAGE);
+                            ex.printStackTrace();
+                            insertado = false;
+                        }
+                    }
                 } catch (Exception err) {
                     System.out.println(err);
                 }
@@ -418,24 +471,9 @@ public final class FacturaC extends JFrame {
         return formateador.format(ahora);
     }
 
-    void cargarFechas() {
-
-        DIAS = new String[31];
-        for (int a = 1; a < 31; a++) {
-            String num = Integer.toString(a);
-            DIAS[a] = num;
-        }
-
-        AÑOS = new String[41];
-        int contador = 0;
-        for (int a = 1990; a <= 2030; a++) {
-            String num = Integer.toString(a);
-            AÑOS[contador] = num;
-            contador++;
-        }
-    }
-
     public void ejecutarFactura_Cli() {
+
+        cmb_IDFactura.removeAllItems();
 
         Connection miConexion = (Connection) meConecto.ConectarMysql();
 
@@ -451,6 +489,7 @@ public final class FacturaC extends JFrame {
             //Creando las filas para el JTable
             while (rs.next()) {
                 ultimoID = rs.getInt("Id_factura");
+                cmb_IDFactura.addItem(rs.getInt("Id_factura"));
             }
             rs.close();
             miConexion.close();
@@ -485,12 +524,12 @@ public final class FacturaC extends JFrame {
                 if (!IDs.contains(rs.getInt("Id_pedido"))) {
                     IDs.add(rs.getInt("Id_pedido"));
                 }
-
             }
+
             rs.close();
             miConexion.close();
         } catch (SQLException e) {
-            System.err.println("Se ha producido un Error! ");
+            System.err.println("Error 474! " + e);
             System.err.println(e.getMessage());
         }
 
@@ -529,5 +568,51 @@ public final class FacturaC extends JFrame {
         }
         precioNoIVA = suma;
         txt_TotalnoIVA.setText(Float.toString(precioNoIVA));
+    }
+
+    public void Busqueda2() {
+
+        int bucarC = (int) cmb_IDFactura.getSelectedItem();
+        String IDPedido = "";
+        Date fecha1 = null;
+        int TotSIN = 0;
+        int Desc = 0;
+        int totCON = 0;
+
+        Connection miConexion = (Connection) meConecto.ConectarMysql();
+
+        try (Statement st = miConexion.createStatement()) {
+
+            //Nuestra sentencia SQL
+            String sentencia = "SELECT * FROM `factura_cli` WHERE `Id_factura` = '" + bucarC + "'";
+            Statement s = miConexion.createStatement();
+
+            //Almacenamos en un ResultSet
+            ResultSet rs = s.executeQuery(sentencia);
+
+            //Creando las filas para el JTable
+            while (rs.next()) {
+                IDPedido = rs.getString("Id_pedido");
+                fecha1 = rs.getDate("Fecha_factura");
+                TotSIN = rs.getInt("Total_sin_IVA");
+                Desc = rs.getInt("DTO");
+                totCON = rs.getInt("Total_con_IVA");
+
+            }
+            rs.close();
+            miConexion.close();
+
+            DateFormat fecha = new SimpleDateFormat("yyyy/MM/dd");
+
+            txt_IDPedido.setText(IDPedido);
+            txt_fechaFactura.setText(fecha.format(fecha1));
+            txt_TotalSIN.setText(Float.toString(TotSIN));
+            txt_Descuento.setText(Float.toString(Desc));
+            txt_TotalCON.setText(Float.toString(totCON));
+
+        } catch (SQLException e) {
+            System.err.println("Se ha producido un Error!: " + e);
+            System.err.println(e.getMessage());
+        }
     }
 }
