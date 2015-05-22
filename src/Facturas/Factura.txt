@@ -1,6 +1,0 @@
-Numero de factura: 
-Numero del pedido: null
-Fecha de la factura: 1/Enero/1990
-Total (sin IVA): €
-Descuento aplicado: %
-Total (con IVA): €

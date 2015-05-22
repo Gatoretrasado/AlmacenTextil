@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 
 final class AlbaranC extends JFrame {
 
+    //Creamos las variables
     private final JTabbedPane tabbedPane;
     private JPanel pestaña01, pestaña02, pestaña03;
     private String[] AÑOS;
@@ -26,10 +27,12 @@ final class AlbaranC extends JFrame {
 
     public AlbaranC() {
 
+        //Asignamos porpiedades a la ventana
         setTitle("  -- Albaran Cliente -- ");
         setSize(450, 400);
         setResizable(false);
 
+        //Cremoa el panel 
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BorderLayout());
         getContentPane().add(topPanel);
@@ -38,18 +41,19 @@ final class AlbaranC extends JFrame {
 
         cargarFechas();
 
-        // Create the tab pages
+        // Creamos las pestañas
         crearPestaña01();
         crearPestaña02();
         crearPestaña03();
 
-        // Create a tabbed pane
+        // Creamos los paneles de las pestañas
         tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Crear Albaran", pestaña01);
         tabbedPane.addTab("Añadir Productos", pestaña02);
         tabbedPane.addTab("Mostrar Albaran", pestaña03);
         topPanel.add(tabbedPane, BorderLayout.CENTER);
 
+        
         ejecutarPedido_CLi();
         ejecutarPedidos();
         ejecutarProductos();
@@ -63,6 +67,7 @@ final class AlbaranC extends JFrame {
         pestaña01 = new JPanel();
         pestaña01.setLayout(null);
 
+        //Creamos los componentes de la primera pestaña, des damos tamaño y los añadimos
         JLabel lbl_IDAlbaran = new JLabel("Id Albaran:");
         lbl_IDAlbaran.setBounds(30, 25, 68, 22);
         pestaña01.add(lbl_IDAlbaran);
@@ -126,6 +131,7 @@ final class AlbaranC extends JFrame {
         btn_Limpiar.setBounds(300, 300, 90, 27);
         pestaña01.add(btn_Limpiar);
 
+        //Funcionalidad del boton limpiar
         btn_Limpiar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -144,6 +150,7 @@ final class AlbaranC extends JFrame {
             }
         });
 
+        //Funcionalidad del boton aceptar
         btn_Aceptar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -208,7 +215,8 @@ final class AlbaranC extends JFrame {
     public void crearPestaña02() {
         pestaña02 = new JPanel();
         pestaña02.setLayout(null);
-
+        
+        //Creamos los componentes de la segunda pestaña, des damos tamaño y los añadimos
         JLabel lbl_IDAlbaran = new JLabel("Id Albaran:");
         lbl_IDAlbaran.setBounds(30, 25, 68, 22);
         pestaña02.add(lbl_IDAlbaran);
@@ -365,6 +373,8 @@ final class AlbaranC extends JFrame {
         pestaña03 = new JPanel();
         pestaña03.setLayout(null);
 
+        //Creamos los componentes de la tercera pestaña, des damos tamaño y los añadimos
+        
         JLabel lbl_idP = new JLabel("Id Albaran:");
         lbl_idP.setBounds(10, 25, 68, 22);
         pestaña03.add(lbl_idP);

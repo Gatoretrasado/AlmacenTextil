@@ -221,7 +221,7 @@ public final class FacturaC extends JFrame {
                             insertado = false;
                         }
 
-                        //imprimir(nFactura, idPedido, fecha, totalSin, descuento, totalCon);
+                        imprimir(nFactura, idPedido, fecha, totalSin, descuento, totalCon);
                     }
 
                 } catch (Exception err) {
