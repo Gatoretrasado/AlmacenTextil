@@ -1,0 +1,6 @@
+Numero de factura: 7
+Numero del pedido: 1002
+Fecha de la factura: 2015-05-22
+Total (sin IVA): 940.0€
+Descuento aplicado: 1%
+Total (con IVA): 1126€

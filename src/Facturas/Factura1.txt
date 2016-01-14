@@ -1,6 +1,0 @@
-Numero de factura: 1
-Numero del pedido: 12
-Fecha de la factura: 453
-Total (sin IVA): 45354€
-Descuento aplicado: 45354%
-Total (con IVA): 453453€

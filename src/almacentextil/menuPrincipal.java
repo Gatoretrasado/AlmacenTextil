@@ -1,39 +1,40 @@
 package almacentextil;
 
-import java.awt.Color;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import java.awt.*;
+import javax.swing.*;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
+public final class menuPrincipal extends JFrame {
 
-public class menuPrincipal extends JFrame{
-    
     //Creamos los botones
     JButton btn_fact = new JButton("Factura");
     JButton btn_alb = new JButton("Albaran");
     JButton btn_ped = new JButton("Pedido");
     JButton btn_prod = new JButton("Productos");
     JButton btn_datos = new JButton("Datos");
-    
+
     //Creamos el panel
     JPanel contentpanel;
-    
-    
+
     //Declaramos un constructo que llama a la funcion visible()
-    public menuPrincipal(){
+    public menuPrincipal() {
         visible();
     }
-       
-    void visible(){
-        
-        this.setTitle("Producto");
+
+    void visible() {
+
+        this.setTitle(" -- Empresa Textil -- ");
         this.setSize(450, 400);
-        this.setBackground(Color.gray);
+        this.setBackground(Color.ORANGE);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null);
+        this.setResizable(false);
         this.setVisible(true);
-        
+
+        //Color JFrame
+        this.getContentPane().setBackground(Color.orange);
+
+        //Color JPanel
         btn_fact = new javax.swing.JButton();
         btn_alb = new javax.swing.JButton();
         btn_ped = new javax.swing.JButton();
@@ -60,6 +61,7 @@ public class menuPrincipal extends JFrame{
         btn_fact.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         btn_fact.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btn_fact.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_factActionPerformed(evt);
             }
@@ -82,6 +84,7 @@ public class menuPrincipal extends JFrame{
         btn_prod.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         btn_prod.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btn_prod.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_prodActionPerformed(evt);
             }
@@ -104,6 +107,7 @@ public class menuPrincipal extends JFrame{
         btn_alb.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         btn_alb.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btn_alb.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_albActionPerformed(evt);
             }
@@ -124,6 +128,7 @@ public class menuPrincipal extends JFrame{
         btn_datos.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/datos2.png"))); // NOI18N
         btn_datos.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/datos3.png"))); // NOI18N
         btn_datos.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_datosActionPerformed(evt);
             }
@@ -146,6 +151,7 @@ public class menuPrincipal extends JFrame{
         btn_ped.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         btn_ped.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btn_ped.addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_pedActionPerformed(evt);
             }
@@ -154,82 +160,116 @@ public class menuPrincipal extends JFrame{
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btn_alb, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_ped, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(68, 68, 68)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btn_fact, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btn_prod, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(102, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btn_datos, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addGap(40, 40, 40)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(btn_alb, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btn_ped, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(68, 68, 68)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(btn_fact, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btn_prod, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(102, Short.MAX_VALUE))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btn_datos, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(22, 22, 22))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addComponent(btn_datos, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btn_ped, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_fact, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(47, 47, 47)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btn_prod, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(btn_alb, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
-                .addGap(50, 50, 50))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addComponent(btn_datos, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(btn_ped, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btn_fact, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(47, 47, 47)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(btn_prod, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                .addComponent(btn_alb, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
+                        .addGap(50, 50, 50))
         );
-             
+
     }
-    private void btn_factActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        try {             
-                   Factura f = new Factura();
-                } catch (Exception err) {
-                    System.out.println("Error 02");
-                }
-    }                                        
 
-    private void btn_prodActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        try {             
-                   Mostrar_producto mp = new Mostrar_producto();
-                } catch (Exception err) {
-                    System.out.println("Error 02");
-                }
-    }                                        
+    private void btn_factActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            int seleccion = JOptionPane.showOptionDialog(this, "¿Eres Cliente o Proveedor?", "Seleccione una opción", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Cliente", "Proveedor"}, "Cliente");
 
-    private void btn_albActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        try {             
-                   Albaran a = new Albaran();
-                } catch (Exception err) {
-                    System.out.println("Error 02");
+            if (seleccion != -1) {
+                if ((seleccion + 1) == 1) {
+                    //Presiono Cliente
+                    FacturaC cliente = new FacturaC();
+                } else {
+                    //Presiono Proveedor
+                    FacturaP proveedor = new FacturaP();
                 }
-    }                                        
+            }
+        } catch (Exception err) {
+            System.out.println("Error 196: " + err);
+        }
+    }
 
-    private void btn_datosActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        try {             
-                   menuDatos md = new menuDatos();
-                } catch (Exception err) {
-                    System.out.println("Error 02");
-                }
-    }                                        
+    private void btn_prodActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            Mostrar_producto mp = new Mostrar_producto();
+        } catch (Exception err) {
+            System.out.println("Error 204: " + err);
+        }
+    }
 
-    private void btn_pedActionPerformed(java.awt.event.ActionEvent evt) {                                         
-        try {             
-                   Pedido p = new Pedido();
-                } catch (Exception err) {
-                    System.out.println("Error 02");
+    private void btn_albActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            int seleccion = JOptionPane.showOptionDialog(this, "¿Eres Cliente o Proveedor?", "Seleccione una opción", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Cliente", "Proveedor"}, "Cliente");
+
+            if (seleccion != -1) {
+                if ((seleccion + 1) == 1) {
+                    // Presiono Cliente
+                    AlbaranC cliente = new AlbaranC();
+                } else {
+                    // Presiono Proveedor
+                    AlbaranP proveedor = new AlbaranP();
                 }
-    }      
+            }
+        } catch (Exception err) {
+            System.out.println("Error 212: " + err);
+        }
+    }
+
+    private void btn_datosActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            menuDatos md = new menuDatos();
+        } catch (Exception err) {
+            System.out.println("Error 220: " + err);
+        }
+    }
+
+    private void btn_pedActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+
+            int seleccion = JOptionPane.showOptionDialog(this, "¿Eres Cliente o Proveedor?", "Seleccione una opción", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Cliente", "Proveedor"}, "Cliente");
+
+            if (seleccion != -1) {
+                if ((seleccion + 1) == 1) {
+                    // Presiono Cliente
+                    PedidoC cliente = new PedidoC();
+                } else {
+                    // Presiono Proveedor
+                    PedidoP proveedor = new PedidoP();
+                }
+            }
+        } catch (Exception err) {
+            System.out.println("Error 228: " + err);
+        }
+    }
+
     public static void main(String[] args) {
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
-                new menuPrincipalPruebas().setVisible(true);
+                new menuPrincipal().setVisible(true);
             }
         });
     }
